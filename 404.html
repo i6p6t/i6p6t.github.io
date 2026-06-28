@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    // GitHub Pages 404 trick — redirect any unknown path back to index
+    // preserving the path in a query param so the URL rotator can restore it
+    window.location.replace('/?p=' + encodeURIComponent(window.location.pathname));
+  </script>
+</head>
+<body></body>
+</html>
