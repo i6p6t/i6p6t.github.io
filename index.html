@@ -13,7 +13,6 @@
     html, body { height: 100%; font-family: 'Inter', sans-serif; background: #000; overflow-x: hidden; }
     body { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
 
-    /* ── Background video ── */
     #bg-video {
       position: fixed; inset: 0; width: 100%; height: 100%;
       object-fit: cover; z-index: 0;
@@ -22,14 +21,12 @@
     }
     .bg-overlay { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.4); }
 
-    /* ── Page layout ── */
     .page {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; align-items: center; gap: 14px;
       padding: 32px 16px 40px; width: 100%; max-width: 400px;
     }
 
-    /* ── Cards ── */
     .card, .player-card, .activity-card, .spotify-card {
       width: 100%;
       background: rgba(255,255,255,0.08);
@@ -44,11 +41,9 @@
     .spotify-card { padding: 14px 16px; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.12s both; display: none; }
     @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ── Avatar ── */
     .avatar-wrap { width: 82px; height: 82px; margin: 0 auto 15px; }
     .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 2px solid rgba(255,255,255,0.15); }
 
-    /* ── Username with particles ── */
     .username-wrap { position: relative; display: inline-block; margin-bottom: 10px; }
     .username {
       font-size: 23px; font-weight: 700; color: #fff;
@@ -74,7 +69,6 @@
     .bio { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; margin-bottom: 18px; }
     .divider { width:100%; height:1px; background:rgba(255,255,255,0.07); margin-bottom:16px; }
 
-    /* ── Social buttons ── */
     .socials { display:flex; gap:8px; justify-content:center; margin-bottom:18px; flex-wrap:wrap; }
     .social-btn {
       display:flex; align-items:center; gap:7px; padding:7px 14px; border-radius:10px;
@@ -88,7 +82,6 @@
     .social-btn.steam   { color:#b8d0e0; }
     .social-btn.github  { color:#e0e0e0; }
 
-    /* ── Presence ── */
     .presence {
       background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
       border-radius:14px; padding:12px 14px;
@@ -102,7 +95,7 @@
       background:#747f8d; border:2px solid rgba(10,10,15,0.95);
       transition:background 0.4s;
     }
-    /* Mobile phone SVG icon replacing dot */
+
     #deviceIconImg {
       display:none; position:absolute; bottom:-1px; right:-1px;
       width:13px; height:16px;
@@ -119,7 +112,7 @@
       white-space:nowrap; display:inline-flex; align-items:center; gap:4px;
     }
     .guild-badge { width:13px; height:13px; border-radius:2px; object-fit:contain; }
-    /* Badges inline */
+
     .p-badges { display:inline-flex; align-items:center; gap:4px; }
     .p-badge  { position:relative; width:18px; height:18px; display:flex; align-items:center; justify-content:center; }
     .p-badge img { width:18px; height:18px; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6)); }
@@ -131,7 +124,7 @@
       opacity:0; transition:opacity 0.15s; z-index:10;
     }
     .p-badge:hover .p-badge-tip { opacity:1; }
-    /* Scrolling status */
+
     .p-status-wrap {
       overflow:hidden; width:100%;
       mask-image:linear-gradient(to right, transparent 0%, black 6%, black 88%, transparent 100%);
@@ -146,7 +139,6 @@
       display:flex; align-items:center; justify-content:center; gap:4px;
     }
 
-    /* ── Activity card ── */
     .ac-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:0.6px; text-transform:uppercase; margin-bottom:10px; }
     .ac-body  { display:flex; gap:13px; align-items:flex-start; }
     .ac-art-wrap { position:relative; flex-shrink:0; }
@@ -170,7 +162,6 @@
     .ac-state  { font-size:11px; color:rgba(255,255,255,0.35); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:none; }
     .ac-time   { font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
 
-    /* ── Spotify card ── */
     .sp-label { font-size:10px; font-weight:700; color:#1db954; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:5px; }
     .sp-body  { display:flex; gap:13px; align-items:center; }
     .sp-art   { width:54px; height:54px; border-radius:8px; object-fit:cover; flex-shrink:0; background:rgba(255,255,255,0.07); }
@@ -183,7 +174,6 @@
     .sp-bar-fill  { height:100%; border-radius:2px; background:#1db954; transition:width 1s linear; }
     .sp-times { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.25); margin-top:4px; }
 
-    /* ── Music player ── */
     .player-top { display:flex; align-items:center; gap:13px; margin-bottom:13px; }
     .album-art {
       width:50px; height:50px; border-radius:10px; flex-shrink:0;
@@ -236,7 +226,6 @@
 
 <div class="page">
 
-  <!-- ── Profile card ── -->
   <div class="card">
     <div class="avatar-wrap">
       <img class="avatar" src="https://cdn.discordapp.com/avatars/714428648777711656/f7897220b174fc89e58c85430412d871.png" alt="6p6t" />
@@ -265,7 +254,6 @@
 
     <div class="divider"></div>
 
-    <!-- Presence -->
     <div class="presence">
       <div class="p-avatar-wrap">
         <img class="p-avatar" src="https://cdn.discordapp.com/avatars/714428648777711656/f7897220b174fc89e58c85430412d871.png" alt="" />
@@ -315,7 +303,6 @@
     </div>
   </div>
 
-  <!-- ── Activity card ── -->
   <div class="activity-card" id="activityCard">
     <div class="ac-label">Playing a game</div>
     <div class="ac-body">
@@ -336,7 +323,6 @@
     </div>
   </div>
 
-  <!-- ── Spotify card ── -->
   <div class="spotify-card" id="spotifyCard">
     <div class="sp-label">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="#1db954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
@@ -356,7 +342,6 @@
     </div>
   </div>
 
-  <!-- ── Music player ── -->
   <div class="player-card">
     <div class="player-top">
       <div class="album-art" id="albumArt">
@@ -391,9 +376,7 @@
 <audio id="audio"></audio>
 
 <script>
-// ================================================================
-// TAB TITLE: "@" static, "6p6t" types in char by char then deletes
-// ================================================================
+
 (function() {
   const PREFIX  = '@';
   const WORD    = '6p6t';
@@ -418,9 +401,6 @@
   tick();
 })();
 
-// ================================================================
-// HASH URL ROTATOR — changes #hash so no 404 on reload
-// ================================================================
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const SUFCH = '~!@#$%';
 function randSlug() {
@@ -432,17 +412,11 @@ function randSlug() {
 location.hash = randSlug();
 setInterval(() => { location.hash = randSlug(); }, 2000);
 
-// ================================================================
-// VIEWS
-// ================================================================
 const vk = 'views_6p6t_v3';
 let v = parseInt(localStorage.getItem(vk) || '0') + 1;
 localStorage.setItem(vk, v);
 document.getElementById('viewCount').textContent = v;
 
-// ================================================================
-// USERNAME ANIMATION — "6p6t" chars fade+rise one by one, loops
-// ================================================================
 const UNAME  = '6p6t';
 const PCOLORS = ['#7c5af0','#3a8ef6','#fff','#a78bfa','#60a5fa'];
 function animateUsername() {
@@ -460,7 +434,6 @@ function animateUsername() {
 animateUsername();
 setInterval(animateUsername, 5000);
 
-// PARTICLES floating up from username
 function spawnParticle() {
   const wrap = document.getElementById('usernameWrap');
   const el   = document.getElementById('usernameEl');
@@ -477,9 +450,6 @@ function spawnParticle() {
 }
 setInterval(spawnParticle, 220);
 
-// ================================================================
-// MUSIC PLAYER
-// ================================================================
 const tracks = [
   { title: 'Mosaïque',   artist: 'Ash',   src: 'assets/mosaique.mp3',  cover: 'assets/mosaique.jpeg' },
   { title: 'Peaches (feat. Daniel Caesar & Giveon)', artist: 'Justin Bieber, Daniel Caesar, GIVĒON', src: 'assets/peaches.mp3', cover: 'assets/peaches.jpeg' },
@@ -489,7 +459,6 @@ const NOTE_SM  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
 let current = 0, playing = false;
 const audio = document.getElementById('audio');
 
-// Build playlist
 const plEl = document.getElementById('playlist');
 tracks.forEach((t, i) => {
   const div = document.createElement('div');
@@ -552,10 +521,8 @@ tracks.forEach((t,i) => {
 });
 function fmt(s) { const m=Math.floor(s/60),sec=Math.floor(s%60); return m+':'+(sec<10?'0':'')+sec; }
 
-// Load first track (no play yet — autoplay handles it)
 loadTrack(0, false);
 
-// AUTOPLAY on page load / first interaction
 let autoplayed = false;
 function tryAutoplay() {
   if (autoplayed) return;
@@ -570,9 +537,6 @@ audio.play().then(() => { autoplayed = true; setPlaying(true); }).catch(() => {
   );
 });
 
-// ================================================================
-// DISCORD PRESENCE — LANYARD
-// ================================================================
 const DISCORD_ID   = '714428648777711656';
 const dot          = document.getElementById('statusDot');
 const deviceIcon   = document.getElementById('deviceIconImg');
@@ -586,7 +550,6 @@ const spCard       = document.getElementById('spotifyCard');
 const STATUS_COLORS = { online:'#3ba55d', idle:'#faa81a', dnd:'#ed4245', offline:'#747f8d' };
 let elapsedInterval = null;
 
-// Scrolling ticker
 function applyTicker(text) {
   const el   = document.getElementById('presenceStatus');
   const wrap = el.parentElement;
@@ -605,7 +568,6 @@ function applyTicker(text) {
   });
 }
 
-// Activity image fallback chain
 function tryImages(urls, el, fallbackHtml, imgStyle) {
   const remaining = [...urls].filter(Boolean);
   function attempt() {
@@ -634,7 +596,6 @@ async function fetchPresence() {
     const d = json.data;
     const status = d.discord_status || 'offline';
 
-    // Device — mobile shows phone SVG, desktop shows dot
     if (d.active_on_discord_mobile) {
       phonebody.setAttribute('fill', STATUS_COLORS[status] || STATUS_COLORS.offline);
       deviceIcon.style.display = '';
@@ -645,7 +606,6 @@ async function fetchPresence() {
       dot.style.background = STATUS_COLORS[status] || STATUS_COLORS.offline;
     }
 
-    // Guild tag
     const pg = d.discord_user?.primary_guild;
     if (pg?.tag) {
       guildTextEl.textContent = pg.tag;
@@ -656,7 +616,6 @@ async function fetchPresence() {
       guildTagEl.style.display = 'inline-flex';
     } else guildTagEl.style.display = 'none';
 
-    // Status text
     const customAct = (d.activities||[]).find(a=>a.type===4);
     const gameAct   = (d.activities||[]).find(a=>a.type===0);
     let statusText;
@@ -666,13 +625,11 @@ async function fetchPresence() {
     else statusText = {online:'Online',idle:'Away',dnd:'Do Not Disturb',offline:'Offline'}[status]||'Offline';
     applyTicker(statusText);
 
-    // ── Activity card ──
     if (gameAct) {
       actCard.style.display = 'block';
       document.getElementById('acName').textContent = gameAct.name || '—';
       const appId = gameAct.application_id;
 
-      // Build image URL candidates
       const largeUrls = [];
       if (gameAct.assets?.large_image) {
         const li = gameAct.assets.large_image;
@@ -688,7 +645,6 @@ async function fetchPresence() {
       const fallSvg = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><rect x="2" y="7" width="20" height="13" rx="3"/><path d="M8 11h2m-1-1v2M15 12h2"/></svg>`;
       tryImages(largeUrls, document.getElementById('acArtLarge'), fallSvg, 'width:64px;height:64px;border-radius:10px;object-fit:cover;');
 
-      // Small icon
       const smallWrap = document.getElementById('acArtSmall');
       if (gameAct.assets?.small_image) {
         const si = gameAct.assets.small_image;
@@ -699,13 +655,11 @@ async function fetchPresence() {
         smallWrap.style.display = 'flex';
       } else smallWrap.style.display = 'none';
 
-      // Details / state
       const detEl = document.getElementById('acDetail');
       const stEl  = document.getElementById('acState');
       if (gameAct.details) { detEl.textContent = gameAct.details; detEl.style.display = ''; } else detEl.style.display = 'none';
       if (gameAct.state)   { stEl.textContent  = gameAct.state;   stEl.style.display  = ''; } else stEl.style.display  = 'none';
 
-      // Elapsed timer
       if (elapsedInterval) clearInterval(elapsedInterval);
       if (gameAct.timestamps?.start) {
         const start = gameAct.timestamps.start;
@@ -717,7 +671,6 @@ async function fetchPresence() {
       if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
     }
 
-    // ── Spotify card ──
     if (d.listening_to_spotify && d.spotify) {
       spCard.style.display = 'block';
       const sp = d.spotify;
@@ -746,7 +699,6 @@ async function fetchPresence() {
 fetchPresence();
 setInterval(fetchPresence, 30000);
 
-// Spotify bar ticks every second
 setInterval(() => {
   if (spCard.style.display === 'none') return;
   const fill  = document.getElementById('spBarFill');
