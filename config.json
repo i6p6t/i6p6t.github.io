@@ -69,6 +69,16 @@
     "interval": 2000
   },
 
+  "animations": {
+    "aurora": true,
+    "particles": true,
+    "particleCount": 55,
+    "tilt": true,
+    "cursorGlow": true,
+    "visualizer": true,
+    "clickBurst": true
+  },
+
   "usernameEffect": {
     "replayInterval": 5000,
     "particleInterval": 220,
