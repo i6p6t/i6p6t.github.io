@@ -854,7 +854,7 @@ async function boot() {
     const vx = viz.getContext('2d');
     const BARS = 36;
     const levels = new Array(BARS).fill(0);
-    let actx = null, analyser = null, freq = null;
+    const analyser = null, freq = null;
 
     function sizeViz() {
       const r = viz.getBoundingClientRect();
@@ -867,24 +867,7 @@ async function boot() {
     if (window.ResizeObserver) new ResizeObserver(sizeViz).observe(viz);
     else window.addEventListener('resize', sizeViz);
 
-    function initAnalyser() {
-      if (actx) { if (actx.resume) actx.resume(); return; }
-      try {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        actx = new AC();
-        analyser = actx.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.8;
-        freq = new Uint8Array(analyser.frequencyBinCount);
-        const src = actx.createMediaElementSource(audio);
-        src.connect(analyser);
-        analyser.connect(actx.destination);
-        if (actx.state === 'suspended') actx.resume();
-      } catch (e) { analyser = null; }
-    }
-    ['click', 'touchstart', 'keydown'].forEach(ev =>
-      document.addEventListener(ev, initAnalyser, { once: true })
-    );
+    // The visualizer is animated only; it never touches the audio output.
 
     function drawViz(t) {
       const w = viz.clientWidth, h = viz.clientHeight;
