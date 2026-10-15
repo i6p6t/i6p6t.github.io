@@ -4,10 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@6p6t</title>
+
+  <!-- Link preview (Discord, Twitter, iMessage, etc.). Crawlers don't run JavaScript,
+       so these have to be edited here and can't come from config.json. -->
+  <meta name="description" content="ayo" />
+  <meta name="theme-color" content="#7c5af0" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="6p6t" />
+  <meta property="og:title" content="6p6t.hvh" />
+  <meta property="og:description" content="ayo" />
+  <meta property="og:url" content="https://6p6t.lol/" />
+  <meta property="og:image" content="https://cdn.discordapp.com/avatars/1541065815321874433/e253b5655e7506b84bf1de476b400d77.png?size=512" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6p6t.hvh" />
+  <meta name="twitter:description" content="ayo" />
+  <meta name="twitter:image" content="https://cdn.discordapp.com/avatars/1541065815321874433/e253b5655e7506b84bf1de476b400d77.png?size=512" />
   <link id="favicon" rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Yuji+Boku&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: 'Inter', sans-serif; background: #000; overflow-x: hidden; }
@@ -348,6 +365,44 @@
     @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2px); } }
     .ctrl-btn:active { transform:scale(0.9); }
 
+    /* Click-to-enter splash */
+    .enter {
+      position:fixed; inset:0; z-index:100;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; user-select:none; -webkit-user-select:none;
+      --glow:#7c5af0;
+      background:rgba(0,0,0,0.5);
+      backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px);
+      transition:opacity 0.7s ease, visibility 0.7s, backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
+    }
+    .enter.hide {
+      opacity:0; visibility:hidden; pointer-events:none;
+      backdrop-filter:blur(0); -webkit-backdrop-filter:blur(0);
+    }
+    /* Optional: drop YouMurderer.woff2 or .ttf into assets/ to use it for any Latin text.
+       It has no Japanese characters, so the Japanese falls back to Yuji Boku (brush style). */
+    @font-face {
+      font-family:'YouMurderer';
+      src:url('assets/YouMurderer.woff2') format('woff2'), url('assets/YouMurderer.ttf') format('truetype');
+      font-display:swap;
+    }
+    .enter span {
+      font-family:'YouMurderer', 'Yuji Boku', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+      font-size:clamp(30px, 8vw, 52px); font-weight:400;
+      letter-spacing:0.14em; padding-left:0.14em; line-height:1.2; text-align:center;
+      color:#fff; -webkit-text-stroke:1.2px #fff;
+      filter:url(#rough);
+      animation:enterGlow 2.6s ease-in-out infinite;
+    }
+    @keyframes enterGlow {
+      0%,100% { opacity:0.8; text-shadow:0 0 6px var(--glow), 0 0 18px var(--glow), 0 0 40px var(--glow); }
+      45%     { opacity:1;   text-shadow:0 0 8px var(--glow), 0 0 26px var(--glow), 0 0 60px var(--glow), 0 0 100px var(--glow); }
+      50%     { opacity:0.85; }
+      55%     { opacity:1; }
+    }
+    /* Hold the page entrance animations until the visitor clicks in */
+    body.locked .page *, body.locked .page *::before, body.locked .page *::after { animation-play-state:paused !important; }
+
     /* Respect reduced-motion settings */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -358,7 +413,17 @@
     }
   </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="enter" id="enter"><span id="enterText" lang="ja">クリックして入る</span></div>
+
+<!-- Roughens the edges of the enter text for a grungy ink look -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="rough" x="-5%" y="-20%" width="110%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3" result="noise" />
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+</svg>
 
 <video id="bg-video" muted loop playsinline></video>
 <div class="bg-overlay"></div>
@@ -709,7 +774,31 @@ async function boot() {
   loadTrack(0, false);
 
   audio.volume = cfg.player.volume;
-  if (cfg.player.autoplay) {
+
+  // ---------- Click-to-enter screen ----------
+  const ES = Object.assign({ enabled: true, text: 'クリックして入る', glowColor: '#7c5af0' }, cfg.enterScreen || {});
+  const enterEl = document.getElementById('enter');
+  if (ES.enabled) {
+    document.getElementById('enterText').textContent = ES.text;
+    enterEl.style.setProperty('--glow', ES.glowColor);
+    let entered = false;
+    const enterSite = () => {
+      if (entered) return;
+      entered = true;
+      document.body.classList.remove('locked');
+      enterEl.classList.add('hide');
+      setTimeout(() => enterEl.remove(), 800);
+      bgVideo.play().catch(() => {});
+      if (cfg.player.autoplay) loadTrack(0, true);
+    };
+    enterEl.addEventListener('click', enterSite);
+    document.addEventListener('keydown', enterSite);
+  } else {
+    document.body.classList.remove('locked');
+    enterEl.remove();
+  }
+
+  if (cfg.player.autoplay && !ES.enabled) {
     let autoplayed = false;
     const tryAutoplay = () => {
       if (autoplayed) return;
