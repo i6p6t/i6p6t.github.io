@@ -69,6 +69,12 @@
     "interval": 2000
   },
 
+  "enterScreen": {
+    "enabled": true,
+    "text": "クリックして入る",
+    "glowColor": "#7c5af0"
+  },
+
   "animations": {
     "aurora": false,
     "particles": true,
