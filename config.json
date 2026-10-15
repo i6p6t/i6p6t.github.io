@@ -70,7 +70,7 @@
   },
 
   "animations": {
-    "aurora": true,
+    "aurora": false,
     "particles": true,
     "particleCount": 55,
     "tilt": true,
