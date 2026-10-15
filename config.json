@@ -1,0 +1,96 @@
+{
+  "site": {
+    "favicon": "assets/favicon.png",
+    "backgroundVideo": "assets/bg.mp4"
+  },
+
+  "titleAnimation": {
+    "prefix": "@",
+    "word": "6p6t",
+    "typeSpeed": 150,
+    "holdTime": 2000,
+    "deleteSpeed": 80,
+    "pauseTime": 500
+  },
+
+  "profile": {
+    "username": "6p6t.hvh",
+    "displayName": "احسن",
+    "avatar": "https://cdn.discordapp.com/avatars/1541065815321874433/e253b5655e7506b84bf1de476b400d77.png",
+    "bio": "ayo"
+  },
+
+  "socials": [
+    {
+      "name": "Discord",
+      "icon": "discord",
+      "url": "https://discord.com/users/1541065815321874433"
+    },
+    {
+      "name": "Steam",
+      "icon": "steam",
+      "url": "https://steamcommunity.com/id/6p6t"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/i6p6t"
+    }
+  ],
+
+  "badges": [
+    {
+      "name": "Discord Nitro",
+      "img": "https://cdn.discordapp.com/badge-icons/2ba85e8026a8614b640c2837bcdfe21b.png"
+    },
+    {
+      "name": "Early Supporter",
+      "img": "https://cdn.discordapp.com/badge-icons/7060786766c9c840eb3019e725d2b358.png"
+    },
+    {
+      "name": "Server Booster",
+      "img": "assets/booster.webp"
+    }
+  ],
+
+  "discord": {
+    "userId": "714428648777711656",
+    "lanyardApi": "https://api.lanyard.rest/v1/users/",
+    "refreshInterval": 30000,
+    "offlineMessage": "Join discord.gg/lanyard to enable live status"
+  },
+
+  "views": {
+    "storageKey": "views_6p6t_v3"
+  },
+
+  "urlHash": {
+    "randomize": true,
+    "interval": 2000
+  },
+
+  "usernameEffect": {
+    "replayInterval": 5000,
+    "particleInterval": 220,
+    "particleColors": ["#7c5af0", "#3a8ef6", "#fff", "#a78bfa", "#60a5fa"]
+  },
+
+  "player": {
+    "autoplay": true,
+    "volume": 1,
+    "tracks": [
+      {
+        "title": "Mosaïque",
+        "artist": "Ash",
+        "src": "assets/mosaique.mp3",
+        "cover": "assets/mosaique.jpeg"
+      },
+      {
+        "title": "Peaches (feat. Daniel Caesar & Giveon)",
+        "artist": "Justin Bieber, Daniel Caesar, GIVĒON",
+        "src": "assets/peaches.mp3",
+        "cover": "assets/peaches.jpeg"
+      }
+    ]
+  }
+}
