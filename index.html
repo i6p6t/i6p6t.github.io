@@ -217,12 +217,153 @@
     .pl-title  { font-size:12px; color:rgba(255,255,255,0.82); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .pl-artist { font-size:11px; color:rgba(255,255,255,0.32); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
     .pl-dur { font-size:11px; color:rgba(255,255,255,0.22); flex-shrink:0; }
+
+    /* ================= Motion & effects ================= */
+    :root { --px:0px; --py:0px; }
+
+    /* Aurora background blobs */
+    .aurora {
+      position:fixed; inset:-10vmax; z-index:1; overflow:hidden; pointer-events:none;
+      mix-blend-mode:screen;
+      transform:translate(var(--px), var(--py));
+      transition:transform 0.8s ease-out;
+    }
+    .aurora span { position:absolute; border-radius:50%; filter:blur(90px); animation:drift 22s ease-in-out infinite alternate; }
+    .aurora span:nth-child(1) { width:55vmax; height:55vmax; background:#7c5af0; opacity:0.32; top:-8vmax; left:-6vmax; }
+    .aurora span:nth-child(2) { width:50vmax; height:50vmax; background:#3a8ef6; opacity:0.28; bottom:-10vmax; right:-6vmax; animation-duration:28s; animation-delay:-8s; }
+    .aurora span:nth-child(3) { width:34vmax; height:34vmax; background:#d946ef; opacity:0.18; top:30%; left:38%; animation-duration:34s; animation-delay:-15s; }
+    @keyframes drift {
+      0%   { transform:translate(0,0) scale(1); }
+      50%  { transform:translate(8vmax,6vmax) scale(1.2); }
+      100% { transform:translate(-6vmax,10vmax) scale(0.9); }
+    }
+    #fx-canvas { position:fixed; inset:0; z-index:1; pointer-events:none; }
+
+    /* Cards: tilt, glow, hover */
+    .card, .player-card, .activity-card, .spotify-card {
+      position:relative;
+      animation-fill-mode:backwards;
+      transition:transform 0.25s ease-out, border-color 0.3s, box-shadow 0.3s;
+      --mx:50%; --my:50%;
+    }
+    .card:hover, .player-card:hover, .activity-card:hover, .spotify-card:hover {
+      border-color:rgba(255,255,255,0.22);
+      box-shadow:0 24px 60px -24px rgba(124,90,240,0.5);
+    }
+    .card::before, .player-card::before, .activity-card::before, .spotify-card::before {
+      content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      opacity:0; transition:opacity 0.3s;
+      background:radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,0.10), transparent 45%);
+    }
+    .card:hover::before, .player-card:hover::before, .activity-card:hover::before, .spotify-card:hover::before { opacity:1; }
+
+    /* Staggered entrance inside the main card */
+    .card > .username-wrap { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.25s backwards; }
+    .card > .bio           { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.35s backwards; }
+    .card > .divider       { animation:growX 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s backwards; }
+    .card > .presence      { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.6s backwards; }
+    .card > .views         { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.7s backwards; }
+    @keyframes riseIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+    @keyframes growX  { from { opacity:0; transform:scaleX(0); } to { opacity:1; transform:none; } }
+    @keyframes popIn  { from { opacity:0; transform:translateY(10px) scale(0.85); } to { opacity:1; transform:none; } }
+
+    /* Avatar: spinning gradient ring, glow, floating */
+    .avatar-wrap {
+      position:relative;
+      animation:avatarIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.1s backwards, floaty 6s ease-in-out 0.9s infinite;
+    }
+    .avatar { position:relative; z-index:1; }
+    .avatar-wrap::before {
+      content:''; position:absolute; inset:-5px; border-radius:50%; padding:2px;
+      background:conic-gradient(from 0deg, #7c5af0, #3a8ef6, #d946ef, #7c5af0);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor; mask-composite:exclude;
+      animation:spin 4s linear infinite;
+    }
+    .avatar-wrap::after {
+      content:''; position:absolute; inset:-6px; border-radius:50%; z-index:-1;
+      background:conic-gradient(from 0deg, #7c5af0, #3a8ef6, #d946ef, #7c5af0);
+      filter:blur(14px); opacity:0.45;
+      animation:spin 4s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes floaty { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+    @keyframes avatarIn { from { opacity:0; transform:scale(0.4) rotate(-25deg); } to { opacity:1; transform:none; } }
+
+    /* Username glow */
+    .username { animation:glow 3s ease-in-out infinite; }
+    @keyframes glow {
+      0%,100% { filter:drop-shadow(0 0 6px rgba(124,90,240,0.5)); }
+      50%     { filter:drop-shadow(0 0 16px rgba(58,142,246,0.85)); }
+    }
+
+    /* Social buttons: pop in, shine sweep, lift */
+    .social-btn {
+      position:relative; overflow:hidden;
+      animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(0.45s + var(--i, 0) * 0.09s) backwards;
+      transition:background 0.2s, transform 0.2s, box-shadow 0.25s;
+    }
+    .social-btn:hover { transform:translateY(-3px) scale(1.04); box-shadow:0 10px 22px -10px currentColor; }
+    .social-btn:active { transform:scale(0.97); }
+    .social-btn::after {
+      content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+      background:linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent);
+      transform:skewX(-20deg); transition:left 0.6s;
+    }
+    .social-btn:hover::after { left:140%; }
+
+    /* Presence */
+    .presence { transition:background 0.3s; }
+    .presence:hover { background:rgba(255,255,255,0.07); }
+    .p-badge { transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    .p-badge:hover { transform:translateY(-3px) scale(1.2); }
+    .status-dot.live::after {
+      content:''; position:absolute; inset:-2px; border-radius:50%; background:inherit;
+      animation:ping 1.8s ease-out infinite;
+    }
+    @keyframes ping { 0% { transform:scale(1); opacity:0.7; } 100% { transform:scale(2.6); opacity:0; } }
+
+    /* Player */
+    #viz { width:100%; height:40px; display:block; margin-bottom:10px; }
+    .album-art { transition:box-shadow 0.3s; }
+    .album-art img { transition:transform 0.6s; }
+    .album-art.playing { animation:pulseRing 2s ease-out infinite; }
+    .album-art.playing img { transform:scale(1.08); }
+    @keyframes pulseRing {
+      0%   { box-shadow:0 0 0 0 rgba(124,90,240,0.55); }
+      100% { box-shadow:0 0 0 12px rgba(124,90,240,0); }
+    }
+    .progress-track { transition:height 0.2s; }
+    .progress-wrap:hover .progress-track { height:5px; }
+    .progress-fill { position:relative; box-shadow:0 0 8px rgba(124,90,240,0.7); }
+    .progress-fill::after {
+      content:''; position:absolute; right:-4px; top:50%; width:9px; height:9px; border-radius:50%;
+      background:#fff; transform:translateY(-50%) scale(0); transition:transform 0.2s;
+    }
+    .progress-wrap:hover .progress-fill::after { transform:translateY(-50%) scale(1); }
+    .pl-item { transition:background 0.15s, transform 0.2s; }
+    .pl-item:hover { transform:translateX(3px); }
+    .pl-item.active { box-shadow:inset 2px 0 0 #7c5af0; }
+    .pl-num.playing { animation:bob 0.9s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2px); } }
+    .ctrl-btn:active { transform:scale(0.9); }
+
+    /* Respect reduced-motion settings */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration:0.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
 
 <video id="bg-video" muted loop playsinline></video>
 <div class="bg-overlay"></div>
+<div class="aurora"><span></span><span></span><span></span></div>
+<canvas id="fx-canvas"></canvas>
 
 <div class="page">
 
@@ -326,6 +467,7 @@
         <div class="song-artist" id="songArtist">—</div>
       </div>
     </div>
+    <canvas id="viz"></canvas>
     <div class="progress-wrap" id="progressWrap">
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <div class="progress-times"><span id="timeCurrent">0:00</span><span id="timeDuration">0:00</span></div>
@@ -395,8 +537,9 @@ async function boot() {
 
   // ---------- Socials ----------
   const socialsEl = document.getElementById('socialsEl');
-  cfg.socials.forEach(s => {
+  cfg.socials.forEach((s, idx) => {
     const a = document.createElement('a');
+    a.style.setProperty('--i', idx);
     a.className = 'social-btn ' + (s.icon || '');
     a.href = s.url;
     a.target = '_blank';
@@ -452,7 +595,15 @@ async function boot() {
   const vk = cfg.views.storageKey;
   let v = parseInt(localStorage.getItem(vk) || '0') + 1;
   localStorage.setItem(vk, v);
-  document.getElementById('viewCount').textContent = v;
+  function countUp(el, to) {
+    const t0 = performance.now(), dur = 1200;
+    (function step(now) {
+      const k = Math.min(1, (now - t0) / dur);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  countUp(document.getElementById('viewCount'), v);
 
   // ---------- Username animation + particles ----------
   const UNAME = cfg.profile.username;
@@ -525,6 +676,7 @@ async function boot() {
   }
   function setPlaying(s) {
     playing = s;
+    document.getElementById('albumArt').classList.toggle('playing', s);
     document.getElementById('iconPlay').style.display  = s ? 'none' : '';
     document.getElementById('iconPause').style.display = s ? '' : 'none';
   }
@@ -570,6 +722,208 @@ async function boot() {
         document.addEventListener(ev, tryAutoplay, { once: true })
       );
     });
+  }
+
+  // ---------- Motion & effects ----------
+  const FX = Object.assign({
+    aurora: true, particles: true, particleCount: 55,
+    tilt: true, cursorGlow: true, visualizer: true, clickBurst: true
+  }, cfg.animations || {});
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer  = window.matchMedia('(pointer: fine)').matches;
+
+  if (!FX.aurora) document.querySelector('.aurora').style.display = 'none';
+
+  // Mouse parallax for the aurora + card tilt and cursor glow
+  if (finePointer && !reduceMotion) {
+    window.addEventListener('pointermove', e => {
+      const px = (e.clientX / innerWidth  - 0.5) * 40;
+      const py = (e.clientY / innerHeight - 0.5) * 40;
+      document.documentElement.style.setProperty('--px', px + 'px');
+      document.documentElement.style.setProperty('--py', py + 'px');
+    });
+    document.querySelectorAll('.card, .player-card, .activity-card, .spotify-card').forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        if (FX.cursorGlow) {
+          card.style.setProperty('--mx', x + 'px');
+          card.style.setProperty('--my', y + 'px');
+        }
+        if (FX.tilt) {
+          const rx = ((y / r.height) - 0.5) * -7;
+          const ry = ((x / r.width)  - 0.5) *  7;
+          card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        }
+      });
+      card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+    });
+  }
+
+  // Floating particles + click bursts
+  const cv = document.getElementById('fx-canvas');
+  const cx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resizeFx() {
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resizeFx();
+  window.addEventListener('resize', resizeFx);
+
+  const mouse = { x: -999, y: -999 };
+  window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+  const motes  = [];
+  const bursts = [];
+  const moteCount = FX.particles ? FX.particleCount : 0;
+  for (let i = 0; i < moteCount; i++) {
+    motes.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.8 + 0.4,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: -(Math.random() * 0.25 + 0.05),
+      tw: Math.random() * Math.PI * 2,
+      col: PCOLORS[Math.floor(Math.random() * PCOLORS.length)]
+    });
+  }
+
+  if (FX.clickBurst && !reduceMotion) {
+    window.addEventListener('pointerdown', e => {
+      for (let i = 0; i < 14; i++) {
+        const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3;
+        bursts.push({
+          x: e.clientX, y: e.clientY,
+          vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1,
+          r: 2 + Math.random() * 2.5, life: 1,
+          col: PCOLORS[Math.floor(Math.random() * PCOLORS.length)]
+        });
+      }
+    });
+  }
+
+  function fxFrame() {
+    cx.clearRect(0, 0, W, H);
+    for (const p of motes) {
+      p.x += p.vx; p.y += p.vy; p.tw += 0.03;
+      const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+      if (d2 < 14400) {
+        const d = Math.sqrt(d2) || 1, f = (120 - d) / 120 * 1.2;
+        p.x += dx / d * f; p.y += dy / d * f;
+      }
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+      cx.globalAlpha = 0.35 + 0.35 * Math.sin(p.tw);
+      cx.fillStyle = p.col;
+      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI * 2); cx.fill();
+    }
+    cx.lineWidth = 0.6;
+    cx.strokeStyle = '#a78bfa';
+    for (let i = 0; i < motes.length; i++) {
+      for (let j = i + 1; j < motes.length; j++) {
+        const a = motes[i], b = motes[j];
+        const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+        if (d2 < 9000) {
+          cx.globalAlpha = (1 - d2 / 9000) * 0.18;
+          cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke();
+        }
+      }
+    }
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.x += b.vx; b.y += b.vy; b.vy += 0.04; b.vx *= 0.98; b.life -= 0.02;
+      if (b.life <= 0) { bursts.splice(i, 1); continue; }
+      cx.globalAlpha = b.life;
+      cx.fillStyle = b.col;
+      cx.beginPath(); cx.arc(b.x, b.y, b.r * b.life + 0.4, 0, Math.PI * 2); cx.fill();
+    }
+    cx.globalAlpha = 1;
+    requestAnimationFrame(fxFrame);
+  }
+  if (!reduceMotion && (moteCount || FX.clickBurst)) fxFrame();
+
+  // Audio visualizer (real spectrum after the first click, animated bars before that)
+  const viz = document.getElementById('viz');
+  if (!FX.visualizer || reduceMotion) {
+    viz.style.display = 'none';
+  } else {
+    const vx = viz.getContext('2d');
+    const BARS = 36;
+    const levels = new Array(BARS).fill(0);
+    let actx = null, analyser = null, freq = null;
+
+    function sizeViz() {
+      const r = viz.getBoundingClientRect();
+      const d = Math.min(window.devicePixelRatio || 1, 2);
+      viz.width = Math.max(1, r.width * d);
+      viz.height = Math.max(1, r.height * d);
+      vx.setTransform(d, 0, 0, d, 0, 0);
+    }
+    sizeViz();
+    if (window.ResizeObserver) new ResizeObserver(sizeViz).observe(viz);
+    else window.addEventListener('resize', sizeViz);
+
+    function initAnalyser() {
+      if (actx) { if (actx.resume) actx.resume(); return; }
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        actx = new AC();
+        analyser = actx.createAnalyser();
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.8;
+        freq = new Uint8Array(analyser.frequencyBinCount);
+        const src = actx.createMediaElementSource(audio);
+        src.connect(analyser);
+        analyser.connect(actx.destination);
+        if (actx.state === 'suspended') actx.resume();
+      } catch (e) { analyser = null; }
+    }
+    ['click', 'touchstart', 'keydown'].forEach(ev =>
+      document.addEventListener(ev, initAnalyser, { once: true })
+    );
+
+    function drawViz(t) {
+      const w = viz.clientWidth, h = viz.clientHeight;
+      vx.clearRect(0, 0, w, h);
+      let real = false;
+      if (analyser && playing) {
+        analyser.getByteFrequencyData(freq);
+        let sum = 0;
+        for (let i = 0; i < freq.length; i++) sum += freq[i];
+        real = sum > 0;
+      }
+      const gap = 3, bw = (w - gap * (BARS - 1)) / BARS;
+      const grad = vx.createLinearGradient(0, h, 0, 0);
+      grad.addColorStop(0, '#7c5af0');
+      grad.addColorStop(1, '#3a8ef6');
+      vx.fillStyle = grad;
+      for (let i = 0; i < BARS; i++) {
+        let target = 0;
+        if (playing) {
+          if (real) {
+            const idx = Math.floor(Math.pow(i / BARS, 1.4) * (freq.length * 0.75)) + 1;
+            target = freq[idx] / 255;
+          } else {
+            target = 0.25 + 0.35 * Math.abs(Math.sin(t / 380 + i * 0.55)) * Math.abs(Math.cos(t / 900 + i * 0.21));
+          }
+        }
+        levels[i] += (target - levels[i]) * (target > levels[i] ? 0.45 : 0.12);
+        const bh = Math.max(2, levels[i] * h);
+        const x = i * (bw + gap);
+        vx.globalAlpha = 0.55 + levels[i] * 0.45;
+        vx.beginPath();
+        if (vx.roundRect) vx.roundRect(x, h - bh, bw, bh, bw / 2);
+        else vx.rect(x, h - bh, bw, bh);
+        vx.fill();
+      }
+      vx.globalAlpha = 1;
+      requestAnimationFrame(drawViz);
+    }
+    requestAnimationFrame(drawViz);
   }
 
   // ---------- Discord presence (Lanyard) ----------
@@ -631,6 +985,7 @@ async function boot() {
       if (!json.success) throw new Error();
       const d = json.data;
       const status = d.discord_status || 'offline';
+      dot.classList.toggle('live', status !== 'offline');
 
       if (d.active_on_discord_mobile) {
         phonebody.setAttribute('fill', STATUS_COLORS[status] || STATUS_COLORS.offline);
