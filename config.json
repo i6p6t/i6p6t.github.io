@@ -54,7 +54,7 @@
   ],
 
   "discord": {
-    "userId": "714428648777711656",
+    "userId": "1541065815321874433",
     "lanyardApi": "https://api.lanyard.rest/v1/users/",
     "refreshInterval": 30000,
     "offlineMessage": "Join discord.gg/lanyard to enable live status"
