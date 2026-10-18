@@ -24,7 +24,7 @@
 
   const ROUTES = ['about', 'projects', 'stack', 'timeline', 'contact'];
   const GH_USER = 'i6p6t';
-  const CLOCK = { zone: 'Asia/Karachi', label: 'PKT', asleepFrom: 2, asleepTo: 9 };
+  const CLOCK = { zone: 'Asia/Karachi', label: 'PKT', asleepFrom: 0, asleepTo: 10 };
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -684,12 +684,18 @@
   function initClock() {
     const el = $('#ltime');
     if (!el) return;
-    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: CLOCK.zone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const base = { hour: 'numeric', minute: '2-digit', hour12: true };
+    const owner = new Intl.DateTimeFormat('en-US', Object.assign({ timeZone: CLOCK.zone }, base));
+    const visitor = new Intl.DateTimeFormat('en-US', base);
+    const ownerHour = new Intl.DateTimeFormat('en-GB', { timeZone: CLOCK.zone, hour: '2-digit', hourCycle: 'h23' });
+    const same = Intl.DateTimeFormat().resolvedOptions().timeZone === CLOCK.zone;
     const tick = () => {
-      const t = fmt.format(new Date());
-      const h = +t.slice(0, 2);
-      const asleep = h >= CLOCK.asleepFrom && h < CLOCK.asleepTo;
-      el.textContent = t + ' ' + CLOCK.label + ' · likely ' + (asleep ? 'asleep' : 'awake');
+      const d = new Date();
+      const h = +ownerHour.format(d);
+      const status = 'likely ' + (h >= CLOCK.asleepFrom && h < CLOCK.asleepTo ? 'asleep' : 'awake');
+      el.textContent = same
+        ? owner.format(d) + ' ' + CLOCK.label + ' · ' + status
+        : visitor.format(d) + ' your time · ' + owner.format(d) + ' ' + CLOCK.label + ' · ' + status;
     };
     tick();
     setInterval(tick, 20000);
