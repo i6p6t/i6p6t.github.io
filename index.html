@@ -1,1182 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@6p6t</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Link preview (Discord, Twitter, iMessage, etc.). Crawlers don't run JavaScript,
-       so these have to be edited here and can't come from config.json. -->
-  <meta name="description" content="Discord · Steam · GitHub" />
-  <meta name="theme-color" content="#7c5af0" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="6p6t.lol" />
-  <meta property="og:title" content="6p6t.hvh" />
-  <meta property="og:description" content="Discord · Steam · GitHub" />
-  <meta property="og:url" content="https://6p6t.lol/" />
-  <meta property="og:image" content="https://6p6t.lol/assets/preview.png?v=1" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="6p6t.hvh" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="6p6t.hvh" />
-  <meta name="twitter:description" content="Discord · Steam · GitHub" />
-  <meta name="twitter:image" content="https://6p6t.lol/assets/preview.png?v=1" />
-  <link id="favicon" rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Yuji+Boku&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background: #000; overflow-x: hidden; }
-    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  <title>6p6t</title>
+  <meta name="description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
+  <meta name="author" content="احسن">
+  <meta name="theme-color" content="#050505">
+  <meta name="color-scheme" content="dark">
+  <link rel="canonical" href="https://i6p6t.github.io/">
 
-    #bg-video {
-      position: fixed; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; z-index: 0;
-      filter: blur(18px) brightness(0.4) saturate(0.8);
-      transform: scale(1.1);
-    }
-    .bg-overlay { position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,0.4); }
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="6p6t">
+  <meta property="og:description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
+  <meta property="og:url" content="https://i6p6t.github.io/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6p6t">
+  <meta name="twitter:description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
 
-    .page {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-      padding: 32px 16px 40px; width: 100%; max-width: 400px;
-    }
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050505'/%3E%3Ctext x='32' y='28' font-family='monospace' font-size='26' font-weight='700' fill='%23e8e8e8' text-anchor='middle'%3E6p%3C/text%3E%3Ctext x='32' y='56' font-family='monospace' font-size='26' font-weight='700' fill='%23e8e8e8' text-anchor='middle'%3E6t%3C/text%3E%3C/svg%3E">
 
-    .card, .player-card, .activity-card, .spotify-card {
-      width: 100%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 22px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .card         { padding: 30px 22px 22px; text-align: center; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
-    .player-card  { padding: 18px 18px 14px; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.07s both; }
-    .activity-card{ padding: 14px 16px; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.10s both; display: none; }
-    .spotify-card { padding: 14px 16px; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) 0.12s both; display: none; }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-
-    .avatar-wrap { width: 82px; height: 82px; margin: 0 auto 15px; }
-    .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 2px solid rgba(255,255,255,0.15); }
-
-    .username-wrap { position: relative; display: inline-block; margin-bottom: 10px; }
-    .username {
-      font-size: 23px; font-weight: 700; color: #fff;
-      letter-spacing: -0.5px; display: inline-block;
-    }
-    .username .char {
-      display: inline-block;
-      opacity: 0; transform: translateY(8px);
-      animation: charIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
-    }
-    @keyframes charIn { to { opacity:1; transform:translateY(0); } }
-    .particle {
-      position: absolute; border-radius: 50%; pointer-events: none;
-      animation: particleDrift linear infinite; opacity: 0;
-    }
-    @keyframes particleDrift {
-      0%   { opacity:0; transform:translateY(0) scale(1); }
-      15%  { opacity:0.7; }
-      85%  { opacity:0.3; }
-      100% { opacity:0; transform:translateY(-32px) scale(0.2); }
-    }
-
-    .bio { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; margin-bottom: 18px; }
-    .divider { width:100%; height:1px; background:rgba(255,255,255,0.07); margin-bottom:16px; }
-
-    .socials { display:flex; gap:8px; justify-content:center; margin-bottom:18px; flex-wrap:wrap; }
-    .social-btn {
-      display:flex; align-items:center; gap:7px; padding:7px 14px; border-radius:10px;
-      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
-      color:rgba(255,255,255,0.75); font-size:12px; font-weight:500;
-      font-family:'Inter',sans-serif; cursor:pointer; text-decoration:none;
-      transition:background 0.2s, transform 0.15s;
-    }
-    .social-btn:hover { background:rgba(255,255,255,0.13); transform:translateY(-1px); }
-    .social-btn.discord { color:#7289da; }
-    .social-btn.steam   { color:#b8d0e0; }
-    .social-btn.github  { color:#e0e0e0; }
-
-    .presence {
-      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-      border-radius:14px; padding:12px 14px;
-      display:flex; align-items:center; gap:12px; text-align:left;
-    }
-    .p-avatar-wrap { position:relative; flex-shrink:0; }
-    .p-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; display:block; }
-    .status-dot {
-      position:absolute; bottom:0; right:0;
-      width:12px; height:12px; border-radius:50%;
-      background:#747f8d; border:2px solid rgba(10,10,15,0.95);
-      transition:background 0.4s;
-    }
-
-    #deviceIconImg {
-      display:none; position:absolute; bottom:-1px; right:-1px;
-      width:13px; height:16px;
-    }
-    .p-info { flex:1; min-width:0; overflow:hidden; }
-    .p-name-row {
-      display:flex; align-items:center; gap:5px; flex-wrap:wrap;
-      font-size:13px; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:5px;
-    }
-    .guild-tag {
-      font-size:10px; font-weight:600;
-      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
-      color:rgba(255,255,255,0.5); padding:1px 6px; border-radius:5px;
-      white-space:nowrap; display:inline-flex; align-items:center; gap:4px;
-    }
-    .guild-badge { width:13px; height:13px; border-radius:2px; object-fit:contain; }
-
-    .p-badges { display:inline-flex; align-items:center; gap:4px; }
-    .p-badge  { position:relative; width:18px; height:18px; display:flex; align-items:center; justify-content:center; }
-    .p-badge img { width:18px; height:18px; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6)); }
-    .p-badge-tip {
-      position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%);
-      background:rgba(20,20,30,0.95); border:1px solid rgba(255,255,255,0.12);
-      color:#fff; font-size:10px; font-weight:500; white-space:nowrap;
-      padding:3px 7px; border-radius:5px; pointer-events:none;
-      opacity:0; transition:opacity 0.15s; z-index:10;
-    }
-    .p-badge:hover .p-badge-tip { opacity:1; }
-
-    .p-status-wrap {
-      overflow:hidden; width:100%;
-      mask-image:linear-gradient(to right, transparent 0%, black 6%, black 88%, transparent 100%);
-      -webkit-mask-image:linear-gradient(to right, transparent 0%, black 6%, black 88%, transparent 100%);
-    }
-    .p-status { font-size:11px; color:rgba(255,255,255,0.38); white-space:nowrap; display:inline-block; }
-    .p-status.scrolling { animation:marquee var(--dur,12s) linear infinite; }
-    @keyframes marquee { 0%{transform:translateX(0);} 100%{transform:translateX(var(--shift,-50%));} }
-
-    .views {
-      margin-top:14px; font-size:11px; color:rgba(255,255,255,0.2);
-      display:flex; align-items:center; justify-content:center; gap:4px;
-    }
-
-    .ac-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:0.6px; text-transform:uppercase; margin-bottom:10px; }
-    .ac-body  { display:flex; gap:13px; align-items:flex-start; }
-    .ac-art-wrap { position:relative; flex-shrink:0; }
-    .ac-art-large {
-      width:64px; height:64px; border-radius:10px;
-      background:rgba(255,255,255,0.07);
-      display:flex; align-items:center; justify-content:center; overflow:hidden;
-    }
-    .ac-art-large img { width:64px; height:64px; border-radius:10px; object-fit:cover; }
-    .ac-art-small {
-      position:absolute; bottom:-4px; right:-4px;
-      width:22px; height:22px; border-radius:50%;
-      border:2px solid rgba(10,10,15,0.95);
-      background:rgba(255,255,255,0.07);
-      overflow:hidden; display:none; align-items:center; justify-content:center;
-    }
-    .ac-art-small img { width:100%; height:100%; object-fit:cover; }
-    .ac-info { flex:1; min-width:0; }
-    .ac-name   { font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .ac-detail { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:none; }
-    .ac-state  { font-size:11px; color:rgba(255,255,255,0.35); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:none; }
-    .ac-time   { font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
-
-    .sp-label { font-size:10px; font-weight:700; color:#1db954; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:5px; }
-    .sp-body  { display:flex; gap:13px; align-items:center; }
-    .sp-art   { width:54px; height:54px; border-radius:8px; object-fit:cover; flex-shrink:0; background:rgba(255,255,255,0.07); }
-    .sp-info  { flex:1; min-width:0; }
-    .sp-song   { font-size:13px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .sp-artist { font-size:11px; color:rgba(255,255,255,0.45); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
-    .sp-album  { font-size:10px; color:rgba(255,255,255,0.28); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-    .sp-bar-wrap { margin-top:10px; }
-    .sp-bar-track { width:100%; height:3px; border-radius:2px; background:rgba(255,255,255,0.12); }
-    .sp-bar-fill  { height:100%; border-radius:2px; background:#1db954; transition:width 1s linear; }
-    .sp-times { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.25); margin-top:4px; }
-
-    .player-top { display:flex; align-items:center; gap:13px; margin-bottom:13px; }
-    .album-art {
-      width:50px; height:50px; border-radius:10px; flex-shrink:0;
-      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.08);
-      display:flex; align-items:center; justify-content:center; overflow:hidden;
-    }
-    .album-art img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
-    .song-info { flex:1; min-width:0; }
-    .song-title  { font-size:14px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .song-artist { font-size:12px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
-    .progress-wrap { margin-bottom:11px; cursor:pointer; user-select:none; }
-    .progress-track { width:100%; height:3px; border-radius:2px; background:rgba(255,255,255,0.12); }
-    .progress-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#7c5af0,#3a8ef6); width:0%; transition:width 0.4s linear; pointer-events:none; }
-    .progress-times { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.25); margin-top:5px; }
-    .controls { display:flex; align-items:center; justify-content:center; gap:22px; margin-bottom:14px; }
-    .ctrl-btn {
-      background:none; border:none; cursor:pointer; padding:4px;
-      color:rgba(255,255,255,0.55); transition:color 0.15s,transform 0.12s;
-      display:flex; align-items:center; line-height:0;
-    }
-    .ctrl-btn:hover { color:#fff; transform:scale(1.13); }
-    .ctrl-btn.play-pause {
-      width:40px; height:40px; border-radius:50%;
-      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
-      display:flex; align-items:center; justify-content:center; color:#fff;
-    }
-    .ctrl-btn.play-pause:hover { background:rgba(255,255,255,0.18); transform:scale(1.05); }
-    .pl-divider { width:100%; height:1px; background:rgba(255,255,255,0.06); margin-bottom:10px; }
-    .playlist { display:flex; flex-direction:column; gap:2px; }
-    .pl-item {
-      display:flex; align-items:center; gap:10px; padding:8px;
-      border-radius:10px; cursor:pointer; transition:background 0.15s;
-    }
-    .pl-item:hover  { background:rgba(255,255,255,0.06); }
-    .pl-item.active { background:rgba(124,90,240,0.15); }
-    .pl-num { font-size:11px; color:rgba(255,255,255,0.22); width:16px; text-align:center; flex-shrink:0; }
-    .pl-num.playing { color:#7c5af0; }
-    .pl-art { width:34px; height:34px; border-radius:7px; flex-shrink:0; background:rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-    .pl-art img { width:100%; height:100%; object-fit:cover; border-radius:7px; }
-    .pl-info { flex:1; min-width:0; }
-    .pl-title  { font-size:12px; color:rgba(255,255,255,0.82); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .pl-artist { font-size:11px; color:rgba(255,255,255,0.32); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-    .pl-dur { font-size:11px; color:rgba(255,255,255,0.22); flex-shrink:0; }
-
-    /* ================= Motion & effects ================= */
-    :root { --px:0px; --py:0px; }
-
-    /* Aurora background blobs */
-    .aurora {
-      position:fixed; inset:-10vmax; z-index:1; overflow:hidden; pointer-events:none;
-      mix-blend-mode:screen;
-      transform:translate(var(--px), var(--py));
-      transition:transform 0.8s ease-out;
-    }
-    .aurora span { position:absolute; border-radius:50%; filter:blur(90px); animation:drift 22s ease-in-out infinite alternate; }
-    .aurora span:nth-child(1) { width:55vmax; height:55vmax; background:#7c5af0; opacity:0.32; top:-8vmax; left:-6vmax; }
-    .aurora span:nth-child(2) { width:50vmax; height:50vmax; background:#3a8ef6; opacity:0.28; bottom:-10vmax; right:-6vmax; animation-duration:28s; animation-delay:-8s; }
-    .aurora span:nth-child(3) { width:34vmax; height:34vmax; background:#d946ef; opacity:0.18; top:30%; left:38%; animation-duration:34s; animation-delay:-15s; }
-    @keyframes drift {
-      0%   { transform:translate(0,0) scale(1); }
-      50%  { transform:translate(8vmax,6vmax) scale(1.2); }
-      100% { transform:translate(-6vmax,10vmax) scale(0.9); }
-    }
-    #fx-canvas { position:fixed; inset:0; z-index:1; pointer-events:none; }
-
-    /* Cards: tilt, glow, hover */
-    .card, .player-card, .activity-card, .spotify-card {
-      position:relative;
-      animation-fill-mode:backwards;
-      transition:transform 0.25s ease-out, border-color 0.3s, box-shadow 0.3s;
-      --mx:50%; --my:50%;
-    }
-    .card:hover, .player-card:hover, .activity-card:hover, .spotify-card:hover {
-      border-color:rgba(255,255,255,0.22);
-      box-shadow:0 24px 60px -24px rgba(124,90,240,0.5);
-    }
-    .card::before, .player-card::before, .activity-card::before, .spotify-card::before {
-      content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-      opacity:0; transition:opacity 0.3s;
-      background:radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,0.10), transparent 45%);
-    }
-    .card:hover::before, .player-card:hover::before, .activity-card:hover::before, .spotify-card:hover::before { opacity:1; }
-
-    /* Staggered entrance inside the main card */
-    .card > .username-wrap { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.25s backwards; }
-    .card > .bio           { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.35s backwards; }
-    .card > .divider       { animation:growX 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s backwards; }
-    .card > .presence      { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.6s backwards; }
-    .card > .views         { animation:riseIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.7s backwards; }
-    @keyframes riseIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
-    @keyframes growX  { from { opacity:0; transform:scaleX(0); } to { opacity:1; transform:none; } }
-    @keyframes popIn  { from { opacity:0; transform:translateY(10px) scale(0.85); } to { opacity:1; transform:none; } }
-
-    /* Avatar: spinning gradient ring, glow, floating */
-    .avatar-wrap {
-      position:relative;
-      animation:avatarIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.1s backwards, floaty 6s ease-in-out 0.9s infinite;
-    }
-    .avatar { position:relative; z-index:1; }
-    .avatar-wrap::before {
-      content:''; position:absolute; inset:-5px; border-radius:50%; padding:2px;
-      background:conic-gradient(from 0deg, #7c5af0, #3a8ef6, #d946ef, #7c5af0);
-      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite:xor; mask-composite:exclude;
-      animation:spin 4s linear infinite;
-    }
-    .avatar-wrap::after {
-      content:''; position:absolute; inset:-6px; border-radius:50%; z-index:-1;
-      background:conic-gradient(from 0deg, #7c5af0, #3a8ef6, #d946ef, #7c5af0);
-      filter:blur(14px); opacity:0.45;
-      animation:spin 4s linear infinite;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    @keyframes floaty { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
-    @keyframes avatarIn { from { opacity:0; transform:scale(0.4) rotate(-25deg); } to { opacity:1; transform:none; } }
-
-    /* Username glow */
-    .username { animation:glow 3s ease-in-out infinite; }
-    @keyframes glow {
-      0%,100% { filter:drop-shadow(0 0 6px rgba(124,90,240,0.5)); }
-      50%     { filter:drop-shadow(0 0 16px rgba(58,142,246,0.85)); }
-    }
-
-    /* Social buttons: pop in, shine sweep, lift */
-    .social-btn {
-      position:relative; overflow:hidden;
-      animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(0.45s + var(--i, 0) * 0.09s) backwards;
-      transition:background 0.2s, transform 0.2s, box-shadow 0.25s;
-    }
-    .social-btn:hover { transform:translateY(-3px) scale(1.04); box-shadow:0 10px 22px -10px currentColor; }
-    .social-btn:active { transform:scale(0.97); }
-    .social-btn::after {
-      content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
-      background:linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent);
-      transform:skewX(-20deg); transition:left 0.6s;
-    }
-    .social-btn:hover::after { left:140%; }
-
-    /* Presence */
-    .presence { transition:background 0.3s; }
-    .presence:hover { background:rgba(255,255,255,0.07); }
-    .p-badge { transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
-    .p-badge:hover { transform:translateY(-3px) scale(1.2); }
-    .status-dot.live::after {
-      content:''; position:absolute; inset:-2px; border-radius:50%; background:inherit;
-      animation:ping 1.8s ease-out infinite;
-    }
-    @keyframes ping { 0% { transform:scale(1); opacity:0.7; } 100% { transform:scale(2.6); opacity:0; } }
-
-    /* Player */
-    #viz { width:100%; height:40px; display:block; margin-bottom:10px; }
-    .album-art { transition:box-shadow 0.3s; }
-    .album-art img { transition:transform 0.6s; }
-    .album-art.playing { animation:pulseRing 2s ease-out infinite; }
-    .album-art.playing img { transform:scale(1.08); }
-    @keyframes pulseRing {
-      0%   { box-shadow:0 0 0 0 rgba(124,90,240,0.55); }
-      100% { box-shadow:0 0 0 12px rgba(124,90,240,0); }
-    }
-    .progress-track { transition:height 0.2s; }
-    .progress-wrap:hover .progress-track { height:5px; }
-    .progress-fill { position:relative; box-shadow:0 0 8px rgba(124,90,240,0.7); }
-    .progress-fill::after {
-      content:''; position:absolute; right:-4px; top:50%; width:9px; height:9px; border-radius:50%;
-      background:#fff; transform:translateY(-50%) scale(0); transition:transform 0.2s;
-    }
-    .progress-wrap:hover .progress-fill::after { transform:translateY(-50%) scale(1); }
-    .pl-item { transition:background 0.15s, transform 0.2s; }
-    .pl-item:hover { transform:translateX(3px); }
-    .pl-item.active { box-shadow:inset 2px 0 0 #7c5af0; }
-    .pl-num.playing { animation:bob 0.9s ease-in-out infinite; }
-    @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2px); } }
-    .ctrl-btn:active { transform:scale(0.9); }
-
-    /* Click-to-enter splash */
-    .enter {
-      position:fixed; inset:0; z-index:100;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; user-select:none; -webkit-user-select:none;
-      --glow:#7c5af0;
-      background:rgba(0,0,0,0.5);
-      backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px);
-      transition:opacity 0.7s ease, visibility 0.7s, backdrop-filter 0.7s ease, -webkit-backdrop-filter 0.7s ease;
-    }
-    .enter.hide {
-      opacity:0; visibility:hidden; pointer-events:none;
-      backdrop-filter:blur(0); -webkit-backdrop-filter:blur(0);
-    }
-    /* Optional: drop YouMurderer.woff2 or .ttf into assets/ to use it for any Latin text.
-       It has no Japanese characters, so the Japanese falls back to Yuji Boku (brush style). */
-    @font-face {
-      font-family:'YouMurderer';
-      src:url('assets/YouMurderer.woff2') format('woff2'), url('assets/YouMurderer.ttf') format('truetype');
-      font-display:swap;
-    }
-    .enter span {
-      font-family:'YouMurderer', 'Yuji Boku', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-      font-size:clamp(30px, 8vw, 52px); font-weight:400;
-      letter-spacing:0.14em; padding-left:0.14em; line-height:1.2; text-align:center;
-      color:#fff; -webkit-text-stroke:1.2px #fff;
-      filter:url(#rough);
-      animation:enterGlow 2.6s ease-in-out infinite;
-    }
-    @keyframes enterGlow {
-      0%,100% { opacity:0.8; text-shadow:0 0 6px var(--glow), 0 0 18px var(--glow), 0 0 40px var(--glow); }
-      45%     { opacity:1;   text-shadow:0 0 8px var(--glow), 0 0 26px var(--glow), 0 0 60px var(--glow), 0 0 100px var(--glow); }
-      50%     { opacity:0.85; }
-      55%     { opacity:1; }
-    }
-    /* Hold the page entrance animations until the visitor clicks in */
-    body.locked .page *, body.locked .page *::before, body.locked .page *::after { animation-play-state:paused !important; }
-
-    /* Respect reduced-motion settings */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration:0.01ms !important;
-        animation-iteration-count:1 !important;
-        transition-duration:0.01ms !important;
-      }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
+  <link rel="stylesheet" href="/style.css">
 </head>
-<body class="locked">
+<body class="loading">
+  <a class="skip" href="#main">skip to content</a>
 
-<div class="enter" id="enter"><span id="enterText" lang="ja">クリックして入る</span></div>
+  <div id="boot" aria-hidden="true"><pre id="boot-text"></pre></div>
 
-<!-- Roughens the edges of the enter text for a grungy ink look -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <filter id="rough" x="-5%" y="-20%" width="110%" height="140%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3" result="noise" />
-    <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
-  </filter>
-</svg>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div id="cursor" aria-hidden="true" hidden></div>
 
-<video id="bg-video" muted loop playsinline></video>
-<div class="bg-overlay"></div>
-<div class="aurora"><span></span><span></span><span></span></div>
-<canvas id="fx-canvas"></canvas>
-
-<div class="page">
-
-  <div class="card">
-    <div class="avatar-wrap">
-      <img class="avatar" id="avatarImg" src="" alt="" />
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="logo" href="/" aria-label="6p6t, back to top">6p6t</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a class="lnk" href="/about">about</a></li>
+          <li><a class="lnk" href="/projects">projects</a></li>
+          <li><a class="lnk" href="/stack">stack</a></li>
+          <li><a class="lnk" href="/timeline">timeline</a></li>
+          <li><a class="lnk" href="/contact">contact</a></li>
+        </ul>
+      </nav>
+      <span id="prog" class="prog" aria-hidden="true"></span>
     </div>
+    <div class="rule" data-rule="─" aria-hidden="true"></div>
+  </header>
 
-    <div class="username-wrap" id="usernameWrap">
-      <div class="username" id="usernameEl"></div>
-    </div>
+  <main id="main" tabindex="-1">
 
-    <div class="bio" id="bioEl"></div>
+    <section id="top" class="hero wrap" aria-label="Introduction">
+      <h1 class="sr-only">6p6t</h1>
+      <noscript><p class="ns-title">6p6t</p></noscript>
+      <pre id="hero-art" class="hero-art" aria-hidden="true"></pre>
 
-    <div class="socials" id="socialsEl"></div>
+      <p class="tagline">
+        <span class="sr-only">Python developer.</span>
+        <span aria-hidden="true"><span class="prompt">&gt;</span> <span id="tagline"></span><span class="caret">█</span></span>
+      </p>
 
-    <div class="divider"></div>
+      <p class="intro">
+        Python developer. I build self-contained tools: a standard-library NAS, a terminal video player
+        and a subtitle generator.
+        <span class="byline">by <span class="ur" dir="rtl" lang="ur">احسن</span></span>
+      </p>
 
-    <div class="presence">
-      <div class="p-avatar-wrap">
-        <img class="p-avatar" id="pAvatarImg" src="" alt="" />
-        <div class="status-dot" id="statusDot"></div>
-        <svg id="deviceIconImg" style="display:none;position:absolute;bottom:-1px;right:-1px;width:13px;height:16px;" viewBox="0 0 10 14" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <mask id="phonemask">
-              <rect x="0" y="0" width="10" height="14" rx="2" fill="white"/>
-              <rect x="1.5" y="1.5" width="7" height="8.5" rx="0.5" fill="black"/>
-              <circle cx="5" cy="12" r="1.2" fill="black"/>
-            </mask>
-          </defs>
-          <rect id="phonebody" x="0" y="0" width="10" height="14" rx="2" fill="#3ba55d" mask="url(#phonemask)"/>
-        </svg>
-      </div>
-      <div class="p-info">
-        <div class="p-name-row">
-          <span id="displayNameEl"></span>
-          <span class="guild-tag" id="guildTag" style="display:none">
-            <img class="guild-badge" id="guildBadge" src="" alt="" />
-            <span id="guildTagText"></span>
-          </span>
-          <div class="p-badges" id="badgesEl"></div>
+      <p class="cta">
+        <a class="lnk" href="/projects">view projects</a>
+        <a class="lnk" href="/contact">contact</a>
+      </p>
+
+      <a class="scroll-hint" href="/about" aria-label="Scroll to about section"><span aria-hidden="true">↓ scroll</span></a>
+    </section>
+
+    <section id="about" class="sec wrap" aria-labelledby="h-about">
+      <div class="sec-head"><span class="num" aria-hidden="true">01</span><h2 id="h-about" data-scramble>about</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
+
+      <div class="frame reveal about-grid" data-title="whoami">
+        <div class="about-text">
+          <p>I am <span class="ur" dir="rtl" lang="ur">احسن</span>, a developer working under the name <strong>6p6t</strong>.
+             I build Python tools end to end, from design to release.</p>
+          <p class="dim">I favor software that is simple to deploy and maintain: few dependencies,
+             predictable behavior, minimal setup. Current work covers self-hosted storage,
+             terminal video playback and subtitle generation.</p>
+          <ul class="facts">
+            <li><span class="k">role</span> Developer</li>
+            <li><span class="k">language</span> Python</li>
+            <li><span class="k">focus</span> CLI tools, self-hosting, media</li>
+            <li><span class="k">status</span> Available for select work</li>
+          </ul>
         </div>
-        <div class="p-status-wrap">
-          <span class="p-status" id="presenceStatus">Fetching...</span>
+        <figure class="portrait" aria-hidden="true">
+          <pre id="face"></pre>
+        </figure>
+      </div>
+    </section>
+
+    <section id="projects" class="sec wrap" aria-labelledby="h-projects">
+      <div class="sec-head"><span class="num" aria-hidden="true">02</span><h2 id="h-projects" data-scramble>projects</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
+
+      <div class="cards">
+        <article class="frame card reveal">
+          <pre class="thumb" data-thumb="storage" aria-hidden="true"></pre>
+          <h3>▸ 6p6t-storage-service</h3>
+          <p>Network-attached storage service in pure Python. Standard library only, no dependencies to install.</p>
+          <ul class="tags" aria-label="Tech stack"><li>python</li><li>nas</li><li>standard library</li></ul>
+          <p class="card-links"><a class="lnk" href="https://github.com/i6p6t/6p6t-storage-service" rel="noopener">source</a></p>
+        </article>
+
+        <article class="frame card reveal">
+          <pre class="thumb" data-thumb="player" aria-hidden="true"></pre>
+          <h3>▸ ascii-video-player</h3>
+          <p>Converts video to ASCII in real time and plays it in the terminal.</p>
+          <ul class="tags" aria-label="Tech stack"><li>python</li><li>terminal</li><li>video</li></ul>
+          <p class="card-links"><a class="lnk" href="https://github.com/i6p6t/ascii-video-player" rel="noopener">source</a></p>
+        </article>
+
+        <article class="frame card reveal">
+          <pre class="thumb" data-thumb="subs" aria-hidden="true"></pre>
+          <h3>▸ Submerge</h3>
+          <p>Sideloaded app that generates subtitles and burns them into video.</p>
+          <ul class="tags" aria-label="Tech stack"><li>subtitles</li><li>burn-in</li><li>sideload</li></ul>
+          <p class="card-links"><a class="lnk" href="https://github.com/i6p6t/Submerge" rel="noopener">source</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section id="stack" class="sec wrap" aria-labelledby="h-stack">
+      <div class="sec-head"><span class="num" aria-hidden="true">03</span><h2 id="h-stack" data-scramble>stack</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
+
+      <div class="stack-grid">
+        <div class="frame reveal" data-title="skills">
+          <ul class="bars">
+            <li><span class="sk">Python</span><span class="bar" data-level="95" role="img" aria-label="Python, 95 percent"></span></li>
+            <li><span class="sk">CLI tools</span><span class="bar" data-level="88" role="img" aria-label="CLI tools, 88 percent"></span></li>
+            <li><span class="sk">Linux</span><span class="bar" data-level="80" role="img" aria-label="Linux, 80 percent"></span></li>
+            <li><span class="sk">Networking</span><span class="bar" data-level="76" role="img" aria-label="Networking, 76 percent"></span></li>
+            <li><span class="sk">Video</span><span class="bar" data-level="72" role="img" aria-label="Video processing, 72 percent"></span></li>
+            <li><span class="sk">Web basics</span><span class="bar" data-level="55" role="img" aria-label="HTML, CSS and JavaScript, 55 percent"></span></li>
+          </ul>
+        </div>
+
+        <div class="frame reveal" data-title="overview">
+          <pre class="tree">stack/
+├── language
+│   └── python
+├── approach
+│   ├── standard library first
+│   ├── minimal dependencies
+│   └── built and maintained solo
+├── domains
+│   ├── storage and networking
+│   ├── terminal graphics
+│   └── video and subtitles
+└── tools
+    ├── git
+    └── linux</pre>
         </div>
       </div>
-    </div>
 
-    <div class="views">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span id="viewCount">—</span> views
-    </div>
-  </div>
+      <div id="activity" class="frame reveal" data-title="activity">
+        <pre id="heat" class="heat" role="img" aria-label="Public GitHub activity">loading…</pre>
+      </div>
+    </section>
 
-  <div class="activity-card" id="activityCard">
-    <div class="ac-label">Playing a game</div>
-    <div class="ac-body">
-      <div class="ac-art-wrap">
-        <div class="ac-art-large" id="acArtLarge">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><rect x="2" y="7" width="20" height="13" rx="3"/><path d="M8 11h2m-1-1v2M15 12h2"/></svg>
+    <section id="timeline" class="sec wrap" aria-labelledby="h-timeline">
+      <div class="sec-head"><span class="num" aria-hidden="true">04</span><h2 id="h-timeline" data-scramble>timeline</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
+
+      <div class="frame reveal" data-title="history">
+        <ol class="log">
+          <li>
+            <p><span class="hash" aria-hidden="true">a41f9c2</span> <span class="when">20XX – present</span></p>
+            <p class="role">Independent developer · 6p6t</p>
+            <p class="dim">Designing, building and maintaining Python tools.</p>
+          </li>
+          <li>
+            <p><span class="hash" aria-hidden="true">7be03d1</span> <span class="when">20XX</span></p>
+            <p class="role">Submerge</p>
+            <p class="dim">Released a sideloaded subtitle generation and burn-in app.</p>
+          </li>
+          <li>
+            <p><span class="hash" aria-hidden="true">0c9d5aa</span> <span class="when">20XX</span></p>
+            <p class="role">ascii-video-player</p>
+            <p class="dim">Built a terminal player that renders video as ASCII.</p>
+          </li>
+          <li>
+            <p><span class="hash" aria-hidden="true">3d8e61b</span> <span class="when">20XX</span></p>
+            <p class="role">6p6t-storage-service</p>
+            <p class="dim">Built a NAS service in pure Python with no external dependencies.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="contact" class="sec wrap" aria-labelledby="h-contact">
+      <div class="sec-head"><span class="num" aria-hidden="true">05</span><h2 id="h-contact" data-scramble>contact</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
+
+      <div class="frame reveal term" data-title="terminal">
+        <p><span class="ps1" aria-hidden="true">visitor@6p6t:~$</span> cat contact.txt</p>
+        <ul class="contact">
+          <li><span class="k">github</span>   <a class="lnk" href="https://github.com/i6p6t" rel="me noopener">github.com/i6p6t</a></li>
+          <li><span class="k">x</span>        <a class="lnk" href="https://x.com/6p6t" rel="me noopener">x.com/6p6t</a></li>
+          <li><span class="k">email</span>    <a class="lnk" href="mailto:hello@6p6t.lol">hello@6p6t.lol</a></li>
+          <li><span class="k">linkedin</span> <a class="lnk" href="https://linkedin.com/in/6p6t" rel="me noopener">linkedin.com/in/6p6t</a></li>
+          <li><span class="k">time</span>     <span id="ltime">--:--</span></li>
+        </ul>
+        <p aria-hidden="true"><span class="ps1">visitor@6p6t:~$</span> <span class="caret">█</span></p>
+      </div>
+
+      <div class="frame reveal" data-title="neofetch">
+        <div class="nf">
+          <pre id="nf-logo" aria-hidden="true"></pre>
+          <pre id="nf-info"></pre>
         </div>
-        <div class="ac-art-small" id="acArtSmall">
-          <img id="acSmallImg" src="" alt="" />
-        </div>
       </div>
-      <div class="ac-info">
-        <div class="ac-name"   id="acName">—</div>
-        <div class="ac-detail" id="acDetail"></div>
-        <div class="ac-state"  id="acState"></div>
-        <div class="ac-time"   id="acTime"></div>
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <div class="spotify-card" id="spotifyCard">
-    <div class="sp-label">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="#1db954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-      Listening to Spotify
-    </div>
-    <div class="sp-body">
-      <img class="sp-art" id="spArt" src="" alt="album" />
-      <div class="sp-info">
-        <div class="sp-song"   id="spSong">—</div>
-        <div class="sp-artist" id="spArtist">—</div>
-        <div class="sp-album"  id="spAlbum">—</div>
-      </div>
-    </div>
-    <div class="sp-bar-wrap">
-      <div class="sp-bar-track"><div class="sp-bar-fill" id="spBarFill" style="width:0%"></div></div>
-      <div class="sp-times"><span id="spTimeCur">0:00</span><span id="spTimeTot">0:00</span></div>
-    </div>
-  </div>
+  <footer class="foot wrap">
+    <div class="rule" data-rule="═" aria-hidden="true"></div>
+    <p>
+      <span>© <span id="year">2026</span> 6p6t</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span class="ur" dir="rtl" lang="ur">احسن</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <a class="lnk" href="/">top</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <button id="snd" class="tog" type="button" aria-pressed="true">[ sound: on ]</button>
+    </p>
+  </footer>
 
-  <div class="player-card">
-    <div class="player-top">
-      <div class="album-art" id="albumArt">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></svg>
-      </div>
-      <div class="song-info">
-        <div class="song-title"  id="songTitle">—</div>
-        <div class="song-artist" id="songArtist">—</div>
-      </div>
-    </div>
-    <canvas id="viz"></canvas>
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-times"><span id="timeCurrent">0:00</span><span id="timeDuration">0:00</span></div>
-    </div>
-    <div class="controls">
-      <button class="ctrl-btn" id="btnPrev">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-      </button>
-      <button class="ctrl-btn play-pause" id="btnPlay">
-        <svg id="iconPlay"  width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <svg id="iconPause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-      </button>
-      <button class="ctrl-btn" id="btnNext">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
-      </button>
-    </div>
-    <div class="pl-divider"></div>
-    <div class="playlist" id="playlist"></div>
-  </div>
-
-</div>
-<audio id="audio"></audio>
-
-<script>
-// Social icons live here; config.json picks one by name ("discord", "steam", "github")
-const ICONS = {
-  discord: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>',
-  steam: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z"/></svg>',
-  github: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>'
-};
-
-const NOTE_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></svg>';
-const NOTE_SM  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></svg>';
-
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s == null ? '' : String(s);
-  return d.innerHTML;
-}
-
-function fmt(s) { const m = Math.floor(s/60), sec = Math.floor(s%60); return m + ':' + (sec<10?'0':'') + sec; }
-
-async function boot() {
-  let cfg;
-  try {
-    const res = await fetch('config.json', { cache: 'no-cache' });
-    cfg = await res.json();
-  } catch (e) {
-    document.body.innerHTML = '<p style="color:#fff;font-family:sans-serif">Could not load config.json</p>';
-    console.error(e);
-    return;
-  }
-
-  // ---------- Site ----------
-  document.getElementById('favicon').href = cfg.site.favicon;
-  const bgVideo = document.getElementById('bg-video');
-  bgVideo.src = cfg.site.backgroundVideo;
-  bgVideo.autoplay = true;
-  bgVideo.play().catch(() => {});
-
-  // ---------- Profile ----------
-  document.getElementById('avatarImg').src  = cfg.profile.avatar;
-  document.getElementById('avatarImg').alt  = cfg.profile.username;
-  document.getElementById('pAvatarImg').src = cfg.profile.avatar;
-  document.getElementById('bioEl').textContent = cfg.profile.bio;
-  document.getElementById('displayNameEl').textContent = cfg.profile.displayName || cfg.profile.username;
-
-  // ---------- Socials ----------
-  const socialsEl = document.getElementById('socialsEl');
-  cfg.socials.forEach((s, idx) => {
-    const a = document.createElement('a');
-    a.style.setProperty('--i', idx);
-    a.className = 'social-btn ' + (s.icon || '');
-    a.href = s.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.innerHTML = (ICONS[s.icon] || '') + esc(s.name);
-    socialsEl.appendChild(a);
-  });
-
-  // ---------- Badges ----------
-  const badgesEl = document.getElementById('badgesEl');
-  cfg.badges.forEach(b => {
-    const d = document.createElement('div');
-    d.className = 'p-badge';
-    d.innerHTML = `<img src="${esc(b.img)}" alt="${esc(b.name)}" /><span class="p-badge-tip">${esc(b.name)}</span>`;
-    badgesEl.appendChild(d);
-  });
-
-  // ---------- Tab title typing ----------
-  (function() {
-    const t = cfg.titleAnimation;
-    let i = 0, del = false;
-    function tick() {
-      if (!del) {
-        i++;
-        document.title = t.prefix + t.word.slice(0, i);
-        if (i === t.word.length) { del = true; setTimeout(tick, t.holdTime); }
-        else setTimeout(tick, t.typeSpeed);
-      } else {
-        i--;
-        document.title = t.prefix + t.word.slice(0, i);
-        if (i === 0) { del = false; setTimeout(tick, t.pauseTime); }
-        else setTimeout(tick, t.deleteSpeed);
-      }
-    }
-    tick();
-  })();
-
-  // ---------- Random URL hash ----------
-  if (cfg.urlHash.randomize) {
-    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const SUFCH = '~!@#$%';
-    const randSlug = () => {
-      let s = '';
-      const len = 6 + Math.floor(Math.random() * 5);
-      for (let i = 0; i < len; i++) s += CHARS[Math.floor(Math.random() * CHARS.length)];
-      return s + SUFCH[Math.floor(Math.random() * SUFCH.length)].repeat(2);
-    };
-    location.hash = randSlug();
-    setInterval(() => { location.hash = randSlug(); }, cfg.urlHash.interval);
-  }
-
-  // ---------- View counter ----------
-  const vk = cfg.views.storageKey;
-  let v = parseInt(localStorage.getItem(vk) || '0') + 1;
-  localStorage.setItem(vk, v);
-  function countUp(el, to) {
-    const t0 = performance.now(), dur = 1200;
-    (function step(now) {
-      const k = Math.min(1, (now - t0) / dur);
-      el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
-      if (k < 1) requestAnimationFrame(step);
-    })(t0);
-  }
-  countUp(document.getElementById('viewCount'), v);
-
-  // ---------- Username animation + particles ----------
-  const UNAME = cfg.profile.username;
-  const PCOLORS = cfg.usernameEffect.particleColors;
-  function animateUsername() {
-    const el = document.getElementById('usernameEl');
-    el.innerHTML = '';
-    [...UNAME].forEach((ch, i) => {
-      const s = document.createElement('span');
-      s.className = 'char';
-      s.textContent = ch;
-      s.style.animationDelay    = (i * 0.18) + 's';
-      s.style.animationDuration = '0.55s';
-      el.appendChild(s);
-    });
-  }
-  animateUsername();
-  setInterval(animateUsername, cfg.usernameEffect.replayInterval);
-
-  function spawnParticle() {
-    const wrap = document.getElementById('usernameWrap');
-    const el   = document.getElementById('usernameEl');
-    if (!el.offsetWidth) return;
-    const p   = document.createElement('div');
-    p.className = 'particle';
-    const size = 2 + Math.random() * 4;
-    const x    = 4 + Math.random() * (el.offsetWidth - 8);
-    const dur  = 1.8 + Math.random() * 2;
-    const col  = PCOLORS[Math.floor(Math.random() * PCOLORS.length)];
-    p.style.cssText = `width:${size}px;height:${size}px;left:${x}px;bottom:2px;background:${col};animation-duration:${dur}s;animation-delay:${Math.random()*0.3}s;`;
-    wrap.appendChild(p);
-    setTimeout(() => p.remove(), (dur + 0.5) * 1000);
-  }
-  setInterval(spawnParticle, cfg.usernameEffect.particleInterval);
-
-  // ---------- Music player ----------
-  const tracks = cfg.player.tracks;
-  let current = 0, playing = false;
-  const audio = document.getElementById('audio');
-
-  const plEl = document.getElementById('playlist');
-  tracks.forEach((t, i) => {
-    const div = document.createElement('div');
-    div.className = 'pl-item' + (i === 0 ? ' active' : '');
-    div.innerHTML = `
-      <div class="pl-num" id="plnum-${i}">${i+1}</div>
-      <div class="pl-art">${t.cover ? `<img src="${esc(t.cover)}" alt="" />` : NOTE_SM}</div>
-      <div class="pl-info"><div class="pl-title">${esc(t.title)}</div><div class="pl-artist">${esc(t.artist)}</div></div>
-      <div class="pl-dur" id="pldur-${i}">—</div>
-    `;
-    div.addEventListener('click', () => loadTrack(i, true));
-    plEl.appendChild(div);
-  });
-
-  function loadTrack(i, play = false) {
-    current = i;
-    const t = tracks[i];
-    document.getElementById('songTitle').textContent  = t.title;
-    document.getElementById('songArtist').textContent = t.artist;
-    document.getElementById('albumArt').innerHTML = t.cover ? `<img src="${esc(t.cover)}" alt="cover" />` : NOTE_SVG;
-    audio.src = t.src;
-    document.querySelectorAll('.pl-item').forEach((el, j) => {
-      el.classList.toggle('active', j === i);
-      const num = document.getElementById('plnum-' + j);
-      num.classList.toggle('playing', j === i);
-      num.textContent = j === i ? '♪' : j + 1;
-    });
-    if (play) { audio.play().catch(()=>{}); setPlaying(true); }
-    else setPlaying(false);
-  }
-  function setPlaying(s) {
-    playing = s;
-    document.getElementById('albumArt').classList.toggle('playing', s);
-    document.getElementById('iconPlay').style.display  = s ? 'none' : '';
-    document.getElementById('iconPause').style.display = s ? '' : 'none';
-  }
-  document.getElementById('btnPlay').addEventListener('click', () => {
-    if (!audio.src || audio.src === window.location.href) loadTrack(current, true);
-    else if (playing) { audio.pause(); setPlaying(false); }
-    else { audio.play().catch(()=>{}); setPlaying(true); }
-  });
-  document.getElementById('btnNext').addEventListener('click', () => loadTrack((current+1)%tracks.length, playing));
-  document.getElementById('btnPrev').addEventListener('click', () => {
-    if (audio.currentTime > 3) audio.currentTime = 0;
-    else loadTrack((current-1+tracks.length)%tracks.length, playing);
-  });
-  audio.addEventListener('ended', () => loadTrack((current+1)%tracks.length, true));
-  audio.addEventListener('timeupdate', () => {
-    if (!audio.duration) return;
-    document.getElementById('progressFill').style.width = (audio.currentTime/audio.duration*100)+'%';
-    document.getElementById('timeCurrent').textContent  = fmt(audio.currentTime);
-    document.getElementById('timeDuration').textContent = fmt(audio.duration);
-  });
-  document.getElementById('progressWrap').addEventListener('click', e => {
-    const r = e.currentTarget.getBoundingClientRect();
-    if (audio.duration) audio.currentTime = Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*audio.duration;
-  });
-  tracks.forEach((t,i) => {
-    const tmp = new Audio(); tmp.src = t.src;
-    tmp.addEventListener('loadedmetadata', () => { document.getElementById('pldur-'+i).textContent = fmt(tmp.duration); });
-  });
-
-  loadTrack(0, false);
-
-  audio.volume = cfg.player.volume;
-
-  // ---------- Click-to-enter screen ----------
-  const ES = Object.assign({ enabled: true, text: 'クリックして入る', glowColor: '#7c5af0' }, cfg.enterScreen || {});
-  const enterEl = document.getElementById('enter');
-  if (ES.enabled) {
-    document.getElementById('enterText').textContent = ES.text;
-    enterEl.style.setProperty('--glow', ES.glowColor);
-    let entered = false;
-    const enterSite = () => {
-      if (entered) return;
-      entered = true;
-      document.body.classList.remove('locked');
-      enterEl.classList.add('hide');
-      setTimeout(() => enterEl.remove(), 800);
-      bgVideo.play().catch(() => {});
-      if (cfg.player.autoplay) loadTrack(0, true);
-    };
-    enterEl.addEventListener('click', enterSite);
-    document.addEventListener('keydown', enterSite);
-  } else {
-    document.body.classList.remove('locked');
-    enterEl.remove();
-  }
-
-  if (cfg.player.autoplay && !ES.enabled) {
-    let autoplayed = false;
-    const tryAutoplay = () => {
-      if (autoplayed) return;
-      autoplayed = true;
-      loadTrack(0, true);
-    };
-    audio.src = tracks[0].src;
-    audio.play().then(() => { autoplayed = true; setPlaying(true); }).catch(() => {
-      ['click','touchstart','keydown'].forEach(ev =>
-        document.addEventListener(ev, tryAutoplay, { once: true })
-      );
-    });
-  }
-
-  // ---------- Motion & effects ----------
-  const FX = Object.assign({
-    aurora: true, particles: true, particleCount: 55,
-    tilt: true, cursorGlow: true, visualizer: true, clickBurst: true
-  }, cfg.animations || {});
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const finePointer  = window.matchMedia('(pointer: fine)').matches;
-
-  if (!FX.aurora) document.querySelector('.aurora').style.display = 'none';
-
-  // Mouse parallax for the aurora + card tilt and cursor glow
-  if (finePointer && !reduceMotion) {
-    window.addEventListener('pointermove', e => {
-      const px = (e.clientX / innerWidth  - 0.5) * 40;
-      const py = (e.clientY / innerHeight - 0.5) * 40;
-      document.documentElement.style.setProperty('--px', px + 'px');
-      document.documentElement.style.setProperty('--py', py + 'px');
-    });
-    document.querySelectorAll('.card, .player-card, .activity-card, .spotify-card').forEach(card => {
-      card.addEventListener('pointermove', e => {
-        const r = card.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        if (FX.cursorGlow) {
-          card.style.setProperty('--mx', x + 'px');
-          card.style.setProperty('--my', y + 'px');
-        }
-        if (FX.tilt) {
-          const rx = ((y / r.height) - 0.5) * -7;
-          const ry = ((x / r.width)  - 0.5) *  7;
-          card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-        }
-      });
-      card.addEventListener('pointerleave', () => { card.style.transform = ''; });
-    });
-  }
-
-  // Floating particles + click bursts
-  const cv = document.getElementById('fx-canvas');
-  const cx = cv.getContext('2d');
-  let W = 0, H = 0;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  function resizeFx() {
-    W = innerWidth; H = innerHeight;
-    cv.width = W * dpr; cv.height = H * dpr;
-    cv.style.width = W + 'px'; cv.style.height = H + 'px';
-    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  resizeFx();
-  window.addEventListener('resize', resizeFx);
-
-  const mouse = { x: -999, y: -999 };
-  window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-  const motes  = [];
-  const bursts = [];
-  const moteCount = FX.particles ? FX.particleCount : 0;
-  for (let i = 0; i < moteCount; i++) {
-    motes.push({
-      x: Math.random() * W, y: Math.random() * H,
-      r: Math.random() * 1.8 + 0.4,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: -(Math.random() * 0.25 + 0.05),
-      tw: Math.random() * Math.PI * 2,
-      col: PCOLORS[Math.floor(Math.random() * PCOLORS.length)]
-    });
-  }
-
-  if (FX.clickBurst && !reduceMotion) {
-    window.addEventListener('pointerdown', e => {
-      for (let i = 0; i < 14; i++) {
-        const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3;
-        bursts.push({
-          x: e.clientX, y: e.clientY,
-          vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1,
-          r: 2 + Math.random() * 2.5, life: 1,
-          col: PCOLORS[Math.floor(Math.random() * PCOLORS.length)]
-        });
-      }
-    });
-  }
-
-  function fxFrame() {
-    cx.clearRect(0, 0, W, H);
-    for (const p of motes) {
-      p.x += p.vx; p.y += p.vy; p.tw += 0.03;
-      const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
-      if (d2 < 14400) {
-        const d = Math.sqrt(d2) || 1, f = (120 - d) / 120 * 1.2;
-        p.x += dx / d * f; p.y += dy / d * f;
-      }
-      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
-      if (p.x < -10) p.x = W + 10;
-      if (p.x > W + 10) p.x = -10;
-      cx.globalAlpha = 0.35 + 0.35 * Math.sin(p.tw);
-      cx.fillStyle = p.col;
-      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI * 2); cx.fill();
-    }
-    cx.lineWidth = 0.6;
-    cx.strokeStyle = '#a78bfa';
-    for (let i = 0; i < motes.length; i++) {
-      for (let j = i + 1; j < motes.length; j++) {
-        const a = motes[i], b = motes[j];
-        const dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
-        if (d2 < 9000) {
-          cx.globalAlpha = (1 - d2 / 9000) * 0.18;
-          cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke();
-        }
-      }
-    }
-    for (let i = bursts.length - 1; i >= 0; i--) {
-      const b = bursts[i];
-      b.x += b.vx; b.y += b.vy; b.vy += 0.04; b.vx *= 0.98; b.life -= 0.02;
-      if (b.life <= 0) { bursts.splice(i, 1); continue; }
-      cx.globalAlpha = b.life;
-      cx.fillStyle = b.col;
-      cx.beginPath(); cx.arc(b.x, b.y, b.r * b.life + 0.4, 0, Math.PI * 2); cx.fill();
-    }
-    cx.globalAlpha = 1;
-    requestAnimationFrame(fxFrame);
-  }
-  if (!reduceMotion && (moteCount || FX.clickBurst)) fxFrame();
-
-  // Audio visualizer (real spectrum after the first click, animated bars before that)
-  const viz = document.getElementById('viz');
-  if (!FX.visualizer || reduceMotion) {
-    viz.style.display = 'none';
-  } else {
-    const vx = viz.getContext('2d');
-    const BARS = 36;
-    const levels = new Array(BARS).fill(0);
-    const analyser = null, freq = null;
-
-    function sizeViz() {
-      const r = viz.getBoundingClientRect();
-      const d = Math.min(window.devicePixelRatio || 1, 2);
-      viz.width = Math.max(1, r.width * d);
-      viz.height = Math.max(1, r.height * d);
-      vx.setTransform(d, 0, 0, d, 0, 0);
-    }
-    sizeViz();
-    if (window.ResizeObserver) new ResizeObserver(sizeViz).observe(viz);
-    else window.addEventListener('resize', sizeViz);
-
-    // The visualizer is animated only; it never touches the audio output.
-
-    function drawViz(t) {
-      const w = viz.clientWidth, h = viz.clientHeight;
-      vx.clearRect(0, 0, w, h);
-      let real = false;
-      if (analyser && playing) {
-        analyser.getByteFrequencyData(freq);
-        let sum = 0;
-        for (let i = 0; i < freq.length; i++) sum += freq[i];
-        real = sum > 0;
-      }
-      const gap = 3, bw = (w - gap * (BARS - 1)) / BARS;
-      const grad = vx.createLinearGradient(0, h, 0, 0);
-      grad.addColorStop(0, '#7c5af0');
-      grad.addColorStop(1, '#3a8ef6');
-      vx.fillStyle = grad;
-      for (let i = 0; i < BARS; i++) {
-        let target = 0;
-        if (playing) {
-          if (real) {
-            const idx = Math.floor(Math.pow(i / BARS, 1.4) * (freq.length * 0.75)) + 1;
-            target = freq[idx] / 255;
-          } else {
-            target = 0.25 + 0.35 * Math.abs(Math.sin(t / 380 + i * 0.55)) * Math.abs(Math.cos(t / 900 + i * 0.21));
-          }
-        }
-        levels[i] += (target - levels[i]) * (target > levels[i] ? 0.45 : 0.12);
-        const bh = Math.max(2, levels[i] * h);
-        const x = i * (bw + gap);
-        vx.globalAlpha = 0.55 + levels[i] * 0.45;
-        vx.beginPath();
-        if (vx.roundRect) vx.roundRect(x, h - bh, bw, bh, bw / 2);
-        else vx.rect(x, h - bh, bw, bh);
-        vx.fill();
-      }
-      vx.globalAlpha = 1;
-      requestAnimationFrame(drawViz);
-    }
-    requestAnimationFrame(drawViz);
-  }
-
-  // ---------- Discord presence (Lanyard) ----------
-  const DISCORD_ID   = cfg.discord.userId;
-  const dot          = document.getElementById('statusDot');
-  const deviceIcon   = document.getElementById('deviceIconImg');
-  const phonebody    = document.getElementById('phonebody');
-  const guildTagEl   = document.getElementById('guildTag');
-  const guildBadgeEl = document.getElementById('guildBadge');
-  const guildTextEl  = document.getElementById('guildTagText');
-  const actCard      = document.getElementById('activityCard');
-  const spCard       = document.getElementById('spotifyCard');
-
-  const STATUS_COLORS = { online:'#3ba55d', idle:'#faa81a', dnd:'#ed4245', offline:'#747f8d' };
-  let elapsedInterval = null;
-
-  function applyTicker(text) {
-    const el   = document.getElementById('presenceStatus');
-    const wrap = el.parentElement;
-    el.classList.remove('scrolling');
-    el.style.removeProperty('--dur');
-    el.style.removeProperty('--shift');
-    el.textContent = text;
-    requestAnimationFrame(() => {
-      if (el.scrollWidth > wrap.clientWidth + 4) {
-        el.textContent = text + '     ' + text;
-        const half = el.scrollWidth / 2;
-        el.style.setProperty('--dur', (half/45)+'s');
-        el.style.setProperty('--shift', '-'+half+'px');
-        el.classList.add('scrolling');
-      }
-    });
-  }
-
-  function tryImages(urls, el, fallbackHtml, imgStyle) {
-    const remaining = [...urls].filter(Boolean);
-    function attempt() {
-      if (!remaining.length) { el.innerHTML = fallbackHtml; return; }
-      const src = remaining.shift();
-      const img = new Image();
-      img.onload = () => { el.innerHTML = `<img src="${src}" alt="" style="${imgStyle}" />`; };
-      img.onerror = attempt;
-      img.src = src;
-    }
-    attempt();
-  }
-
-  function elapsed(ts) {
-    const s = Math.floor((Date.now()-ts)/1000);
-    const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
-    if (h>0) return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')} elapsed`;
-    return `${m}:${String(sec).padStart(2,'0')} elapsed`;
-  }
-
-  async function fetchPresence() {
-    try {
-      const res  = await fetch(cfg.discord.lanyardApi + DISCORD_ID);
-      const json = await res.json();
-      if (!json.success) throw new Error();
-      const d = json.data;
-      const status = d.discord_status || 'offline';
-      dot.classList.toggle('live', status !== 'offline');
-
-      if (d.active_on_discord_mobile) {
-        phonebody.setAttribute('fill', STATUS_COLORS[status] || STATUS_COLORS.offline);
-        deviceIcon.style.display = '';
-        dot.style.display = 'none';
-      } else {
-        deviceIcon.style.display = 'none';
-        dot.style.display = '';
-        dot.style.background = STATUS_COLORS[status] || STATUS_COLORS.offline;
-      }
-
-      const pg = d.discord_user?.primary_guild;
-      if (pg?.tag) {
-        guildTextEl.textContent = pg.tag;
-        if (pg.badge && pg.identity_guild_id) {
-          guildBadgeEl.src = `https://cdn.discordapp.com/clan-badges/${pg.identity_guild_id}/${pg.badge}.png?size=16`;
-          guildBadgeEl.style.display = '';
-        } else guildBadgeEl.style.display = 'none';
-        guildTagEl.style.display = 'inline-flex';
-      } else guildTagEl.style.display = 'none';
-
-      const customAct = (d.activities||[]).find(a=>a.type===4);
-      const gameAct   = (d.activities||[]).find(a=>a.type===0);
-      let statusText;
-      if (customAct?.state)               statusText = customAct.state;
-      else if (d.listening_to_spotify && d.spotify) statusText = '🎵 '+d.spotify.song+' — '+d.spotify.artist;
-      else if (gameAct)                   statusText = 'Playing '+gameAct.name;
-      else statusText = {online:'Online',idle:'Away',dnd:'Do Not Disturb',offline:'Offline'}[status]||'Offline';
-      applyTicker(statusText);
-
-      if (gameAct) {
-        actCard.style.display = 'block';
-        document.getElementById('acName').textContent = gameAct.name || '—';
-        const appId = gameAct.application_id;
-
-        const largeUrls = [];
-        if (gameAct.assets?.large_image) {
-          const li = gameAct.assets.large_image;
-          if (li.startsWith('mp:external/')) {
-            largeUrls.push('https://media.discordapp.net/external/'+li.replace('mp:external/',''));
-          } else {
-            largeUrls.push(`https://cdn.discordapp.com/app-assets/${appId}/${li}.png`);
-            largeUrls.push(`https://cdn.discordapp.com/app-assets/${appId}/${li}.webp`);
-          }
-        }
-        if (appId) largeUrls.push(`https://dcdn.dstn.to/app-icons/${appId}`);
-
-        const fallSvg = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><rect x="2" y="7" width="20" height="13" rx="3"/><path d="M8 11h2m-1-1v2M15 12h2"/></svg>';
-        tryImages(largeUrls, document.getElementById('acArtLarge'), fallSvg, 'width:64px;height:64px;border-radius:10px;object-fit:cover;');
-
-        const smallWrap = document.getElementById('acArtSmall');
-        if (gameAct.assets?.small_image) {
-          const si = gameAct.assets.small_image;
-          const smallUrls = si.startsWith('mp:external/')
-            ? ['https://media.discordapp.net/external/'+si.replace('mp:external/','')]
-            : [`https://cdn.discordapp.com/app-assets/${appId}/${si}.png`];
-          tryImages(smallUrls, smallWrap, '', 'width:100%;height:100%;object-fit:cover;');
-          smallWrap.style.display = 'flex';
-        } else smallWrap.style.display = 'none';
-
-        const detEl = document.getElementById('acDetail');
-        const stEl  = document.getElementById('acState');
-        if (gameAct.details) { detEl.textContent = gameAct.details; detEl.style.display = ''; } else detEl.style.display = 'none';
-        if (gameAct.state)   { stEl.textContent  = gameAct.state;   stEl.style.display  = ''; } else stEl.style.display  = 'none';
-
-        if (elapsedInterval) clearInterval(elapsedInterval);
-        if (gameAct.timestamps?.start) {
-          const start = gameAct.timestamps.start;
-          document.getElementById('acTime').textContent = elapsed(start);
-          elapsedInterval = setInterval(() => { document.getElementById('acTime').textContent = elapsed(start); }, 1000);
-        } else document.getElementById('acTime').textContent = '';
-      } else {
-        actCard.style.display = 'none';
-        if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
-      }
-
-      if (d.listening_to_spotify && d.spotify) {
-        spCard.style.display = 'block';
-        const sp = d.spotify;
-        document.getElementById('spSong').textContent   = sp.song   || '—';
-        document.getElementById('spArtist').textContent = sp.artist || '—';
-        document.getElementById('spAlbum').textContent  = sp.album  || '—';
-        if (sp.album_art_url) document.getElementById('spArt').src = sp.album_art_url;
-        const total = sp.timestamps.end - sp.timestamps.start;
-        const prog  = Date.now() - sp.timestamps.start;
-        document.getElementById('spBarFill').style.width = Math.min(100,(prog/total*100))+'%';
-        document.getElementById('spTimeCur').textContent = fmt(prog/1000);
-        document.getElementById('spTimeTot').textContent = fmt(total/1000);
-      } else spCard.style.display = 'none';
-
-    } catch(e) {
-      dot.style.display = '';
-      dot.style.background = STATUS_COLORS.offline;
-      deviceIcon.style.display = 'none';
-      guildTagEl.style.display = 'none';
-      actCard.style.display    = 'none';
-      spCard.style.display     = 'none';
-      applyTicker(cfg.discord.offlineMessage);
-    }
-  }
-
-  fetchPresence();
-  setInterval(fetchPresence, cfg.discord.refreshInterval);
-
-  setInterval(() => {
-    if (spCard.style.display === 'none') return;
-    const fill  = document.getElementById('spBarFill');
-    const totEl = document.getElementById('spTimeTot');
-    const parts = totEl.textContent.split(':').map(Number);
-    const total = parts.length===3 ? parts[0]*3600+parts[1]*60+parts[2] : parts[0]*60+parts[1];
-    if (!total) return;
-    const cur = Math.min(total, parseFloat(fill.style.width)/100*total + 1);
-    fill.style.width = Math.min(100,cur/total*100)+'%';
-    document.getElementById('spTimeCur').textContent = fmt(cur);
-  }, 1000);
-}
-
-boot();
-</script>
+  <script src="/script.js" defer></script>
 </body>
 </html>
