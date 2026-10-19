@@ -9,14 +9,14 @@
   const BRAND = '6p6t';
 
   const TAGLINES = [
-    'Independent developer.',
-    'Discord bots, web platforms, Minecraft plugins.',
-    'Self-hosted tools and automation.'
+    'Independent software developer.',
+    'Discord bots, web platforms and Minecraft plugins.',
+    'Self-hosted software and automation.'
   ];
 
   const BOOT_LINES = [
     '6p6t v1.0',
-    '[ ok ] loading glyphs',
+    '[ ok ] loading assets',
     '[ ok ] starting interface',
     '[ ok ] ready',
     ''
@@ -90,8 +90,7 @@
     };
     label();
 
-    addEventListener('pointerdown', () => sfx.unlock(), true);
-    addEventListener('keydown', () => sfx.unlock(), true);
+    ['pointerdown', 'touchend', 'click', 'keydown'].forEach((ev) => addEventListener(ev, () => sfx.unlock(), true));
 
     if (btn) {
       btn.addEventListener('click', (e) => {
@@ -287,7 +286,8 @@
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      W = innerWidth; H = innerHeight;
+      W = innerWidth; H = innerHeight + (fine ? 0 : 160);
+      cv.style.width = W + 'px'; cv.style.height = H + 'px';
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cols = Math.ceil(W / CW); rows = Math.ceil(H / CHT);
@@ -317,7 +317,10 @@
     }
 
     let rt;
-    addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 150); });
+    addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => { if (!fine && innerWidth === W) return; resize(); }, 150);
+    });
     resize();
     if (reduce) return;
     raf = requestAnimationFrame(loop);
@@ -377,7 +380,7 @@
       const levels = [0.72, 0.45, 0.58, 0.31], N = 20;
       put(0, 1, '6p6t-storage-service');
       levels.forEach((lv, i) => {
-        const fill = Math.round(lv * N), head = Math.floor(t * 6 + i * 5) % N;
+        const fill = Math.round(lv * N), head = t === 0 ? -1 : Math.floor(t * 6 + i * 5) % N;
         let bar = '';
         for (let k = 0; k < N; k++) bar += k === head ? '▒' : k < fill ? '█' : '░';
         put(2 + i * 2, 1, 'd' + i + ' [' + bar + '] ' + Math.round(lv * 100) + '%');
