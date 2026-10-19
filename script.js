@@ -9,9 +9,9 @@
   const BRAND = '6p6t';
 
   const TAGLINES = [
-    'Python developer.',
-    'Self-hosted storage, terminal video, subtitle tooling.',
-    'Few dependencies. Simple to deploy.'
+    'Independent developer.',
+    'Discord bots, web platforms, Minecraft plugins.',
+    'Self-hosted tools and automation.'
   ];
 
   const BOOT_LINES = [
@@ -24,7 +24,7 @@
 
   const ROUTES = ['about', 'projects', 'stack', 'timeline', 'contact'];
   const GH_USER = 'i6p6t';
-  const CLOCK = { zone: 'Asia/Karachi', label: 'PKT', asleepFrom: 0, asleepTo: 10 };
+  const CLOCK = { zone: 'Asia/Karachi', asleepFrom: 0, asleepTo: 10 };
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -490,30 +490,6 @@
     });
   }
 
-  function initBars() {
-    const N = 20;
-    const render = (el, pct) => {
-      const n = Math.round((pct / 100) * N);
-      el.textContent = '[' + '█'.repeat(n) + '░'.repeat(N - n) + '] ' + String(Math.round(pct)).padStart(3, ' ') + '%';
-    };
-    const bars = $$('.bar');
-    bars.forEach((b) => render(b, reduce ? +b.dataset.level : 0));
-    if (reduce) return;
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        const target = +e.target.dataset.level, t0 = performance.now(), dur = 900;
-        (function f(now) {
-          const p = Math.min(1, (now - t0) / dur);
-          render(e.target, target * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) requestAnimationFrame(f);
-        })(t0);
-      });
-    }, { threshold: 0.6 });
-    bars.forEach((b) => io.observe(b));
-  }
-
   function initFace() {
     const pre = $('#face');
     if (!pre) return;
@@ -662,40 +638,16 @@
     ready = true;
   }
 
-  function initProgress() {
-    const el = $('#prog');
-    if (!el) return;
-    const N = 12;
-    let last = -1;
-    const update = () => {
-      const max = document.documentElement.scrollHeight - innerHeight;
-      const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-      const pct = Math.round(p * 100);
-      if (pct === last) return;
-      last = pct;
-      const n = Math.round(p * N);
-      el.textContent = '[' + '█'.repeat(n) + '░'.repeat(N - n) + '] ' + String(pct).padStart(3, ' ') + '%';
-    };
-    addEventListener('scroll', update, { passive: true });
-    addEventListener('resize', update);
-    update();
-  }
-
   function initClock() {
     const el = $('#ltime');
     if (!el) return;
-    const base = { hour: 'numeric', minute: '2-digit', hour12: true };
-    const owner = new Intl.DateTimeFormat('en-US', Object.assign({ timeZone: CLOCK.zone }, base));
-    const visitor = new Intl.DateTimeFormat('en-US', base);
+    const visitor = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
     const ownerHour = new Intl.DateTimeFormat('en-GB', { timeZone: CLOCK.zone, hour: '2-digit', hourCycle: 'h23' });
-    const same = Intl.DateTimeFormat().resolvedOptions().timeZone === CLOCK.zone;
     const tick = () => {
       const d = new Date();
       const h = +ownerHour.format(d);
-      const status = 'likely ' + (h >= CLOCK.asleepFrom && h < CLOCK.asleepTo ? 'asleep' : 'awake');
-      el.textContent = same
-        ? owner.format(d) + ' ' + CLOCK.label + ' · ' + status
-        : visitor.format(d) + ' your time · ' + owner.format(d) + ' ' + CLOCK.label + ' · ' + status;
+      const asleep = h >= CLOCK.asleepFrom && h < CLOCK.asleepTo;
+      el.textContent = visitor.format(d) + ' · likely ' + (asleep ? 'asleep' : 'awake');
     };
     tick();
     setInterval(tick, 20000);
@@ -744,70 +696,150 @@
     info.append(frag);
   }
 
+  async function fetchJson(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(String(r.status));
+    return r.json();
+  }
+
   async function loadActivity() {
-    const key = '6p6t-gh';
+    const key = '6p6t-gh2';
     const ttl = 30 * 60 * 1000;
     try {
       const c = JSON.parse(sessionStorage.getItem(key));
-      if (c && Date.now() - c.t < ttl) return c.days;
+      if (c && Date.now() - c.t < ttl) return c.data;
     } catch (e) {}
 
-    const pages = await Promise.all([1, 2, 3].map((p) =>
-      fetch('https://api.github.com/users/' + GH_USER + '/events/public?per_page=100&page=' + p)
-        .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
-    ));
-    const days = {};
-    pages.forEach((list) => list.forEach((ev) => {
-      const d = String(ev.created_at).slice(0, 10);
-      days[d] = (days[d] || 0) + 1;
-    }));
-    try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), days })); } catch (e) {}
-    return days;
+    let data;
+    try {
+      const j = await fetchJson('https://github-contributions-api.jogruber.de/v4/' + GH_USER + '?y=last');
+      if (!j || !Array.isArray(j.contributions) || !j.contributions.length) throw new Error('empty');
+      const days = {};
+      j.contributions.forEach((c) => { days[c.date] = c.count; });
+      data = { days, span: 53, unit: 'contribution' };
+    } catch (e) {
+      const pages = await Promise.all([1, 2, 3].map((p) =>
+        fetchJson('https://api.github.com/users/' + GH_USER + '/events/public?per_page=100&page=' + p)
+      ));
+      const days = {};
+      pages.forEach((list) => list.forEach((ev) => {
+        const d = String(ev.created_at).slice(0, 10);
+        days[d] = (days[d] || 0) + 1;
+      }));
+      data = { days, span: 13, unit: 'event' };
+    }
+    try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), data })); } catch (e) {}
+    return data;
   }
 
-  function renderActivity(days) {
+  function renderActivity(data) {
     const pre = $('#heat');
-    const WEEKS = 13, DAY = 864e5, PAD = 4;
+    const statsEl = $('#heat-stats');
+    const DAY = 864e5, PAD = 4;
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+
+    pre.textContent = '';
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+    probe.textContent = '0'.repeat(40);
+    pre.appendChild(probe);
+    const ch = probe.getBoundingClientRect().width / 40;
+    const cols = ch > 0 ? Math.floor(pre.clientWidth / ch) : 40;
+    pre.textContent = '';
+
+    const weeks = Math.max(8, Math.min(data.span, Math.floor((cols - PAD) / 2)));
     const now = new Date();
     const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-    const start = today - (new Date(today).getUTCDay() + (WEEKS - 1) * 7) * DAY;
-    const level = (n) => (n === 0 ? '·' : n === 1 ? '░' : n < 4 ? '▒' : n < 7 ? '▓' : '█');
+    const start = today - (new Date(today).getUTCDay() + (weeks - 1) * 7) * DAY;
+    const iso = (t) => new Date(t).toISOString().slice(0, 10);
 
-    const head = ' '.repeat(PAD + WEEKS * 2).split('');
-    const rows = LABELS.map((l) => l.padEnd(PAD));
-    let total = 0, prevMonth = -1;
+    let max = 0;
+    for (let t = start; t <= today; t += DAY) max = Math.max(max, data.days[iso(t)] || 0);
+    const level = (n) => {
+      if (!n) return 0;
+      const r = n / max;
+      return r <= 0.25 ? 1 : r <= 0.5 ? 2 : r <= 0.75 ? 3 : 4;
+    };
 
-    for (let c = 0; c < WEEKS; c++) {
-      const colStart = start + c * 7 * DAY;
-      const month = new Date(colStart).getUTCMonth();
-      if (month !== prevMonth) {
-        const nextSame = c + 1 < WEEKS && new Date(colStart + 7 * DAY).getUTCMonth() === month;
-        const fits = PAD + c * 2 + 3 <= head.length;
-        if ((c !== 0 || nextSame) && fits) {
-          MONTHS[month].split('').forEach((ch, i) => { head[PAD + c * 2 + i] = ch; });
-        }
-        prevMonth = month;
-      }
-      for (let r = 0; r < 7; r++) {
-        const t = colStart + r * DAY;
-        if (t > today) { rows[r] += '  '; continue; }
-        const n = days[new Date(t).toISOString().slice(0, 10)] || 0;
-        total += n;
-        rows[r] += level(n) + ' ';
+    const head = ' '.repeat(PAD + weeks * 2).split('');
+    let prevMonth = -1;
+    for (let c = 0; c < weeks; c++) {
+      const month = new Date(start + c * 7 * DAY).getUTCMonth();
+      if (month === prevMonth) continue;
+      prevMonth = month;
+      const nextSame = c + 1 < weeks && new Date(start + (c + 1) * 7 * DAY).getUTCMonth() === month;
+      if ((c !== 0 || nextSame) && PAD + c * 2 + 3 <= head.length) {
+        MONTHS[month].split('').forEach((ch2, i) => { head[PAD + c * 2 + i] = ch2; });
       }
     }
 
-    pre.textContent = head.join('') + '\n' + rows.join('\n') + '\n\n' +
-      total + ' public events · last ' + WEEKS + ' weeks\nless ░ ▒ ▓ █ more';
-    pre.setAttribute('aria-label', total + ' public GitHub events in the last ' + WEEKS + ' weeks');
+    const unit = data.unit;
+    const frag = document.createDocumentFragment();
+    frag.append(head.join('') + '\n');
+    for (let r = 0; r < 7; r++) {
+      frag.append(LABELS[r].padEnd(PAD));
+      for (let c = 0; c < weeks; c++) {
+        const t = start + (c * 7 + r) * DAY;
+        if (t > today) { frag.append('  '); continue; }
+        const n = data.days[iso(t)] || 0;
+        const s = document.createElement('span');
+        s.className = 'c l' + level(n);
+        s.textContent = '■';
+        s.title = n + ' ' + unit + (n === 1 ? '' : 's') + ' · ' + iso(t);
+        frag.append(s, ' ');
+      }
+      frag.append('\n');
+    }
+    frag.append('\nless ');
+    for (let i = 0; i < 5; i++) {
+      const s = document.createElement('span');
+      s.className = 'c l' + i;
+      s.textContent = '■';
+      frag.append(s, ' ');
+    }
+    frag.append('more');
+    pre.appendChild(frag);
+
+    let total = 0, active = 0, run = 0, longest = 0, bestN = 0, bestT = 0;
+    for (let t = start; t <= today; t += DAY) {
+      const n = data.days[iso(t)] || 0;
+      total += n;
+      if (n > 0) { active++; run++; if (run > longest) longest = run; } else run = 0;
+      if (n > bestN) { bestN = n; bestT = t; }
+    }
+    const fmtDay = (t) => MONTHS[new Date(t).getUTCMonth()] + ' ' + new Date(t).getUTCDate();
+    const rows = [
+      ['period', 'last ' + weeks + ' weeks'],
+      [unit + 's', String(total)],
+      ['active days', String(active)],
+      ['longest streak', longest + (longest === 1 ? ' day' : ' days')],
+      ['best day', bestN ? bestN + ' · ' + fmtDay(bestT) : '–']
+    ];
+    statsEl.textContent = '';
+    const sf = document.createDocumentFragment();
+    rows.forEach(([k, v], i) => {
+      const key = document.createElement('span');
+      key.className = 'k';
+      key.textContent = k;
+      sf.append(key, v + (i < rows.length - 1 ? '\n' : ''));
+    });
+    statsEl.appendChild(sf);
+
+    pre.setAttribute('aria-label', total + ' GitHub ' + unit + 's in the last ' + weeks + ' weeks');
   }
 
   function initActivity() {
     const box = $('#activity');
     if (!box || !$('#heat')) return;
-    loadActivity().then(renderActivity).catch(() => { box.hidden = true; });
+    let data = null, timer = 0;
+    const redraw = () => { if (data) renderActivity(data); };
+    loadActivity().then((d) => {
+      data = d;
+      redraw();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+    }).catch(() => { box.hidden = true; });
+    addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(redraw, 150); });
   }
 
   function initConsole() {
@@ -822,10 +854,8 @@
     initBG();
     initCursor();
     initThumbs();
-    initBars();
     initFace();
     initReveal();
-    initProgress();
     initClock();
     initNeofetch();
     initActivity();
