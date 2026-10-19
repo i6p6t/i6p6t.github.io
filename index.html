@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>6p6t</title>
-  <meta name="description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
+  <meta name="description" content="6p6t — independent developer. Discord bots, self-hosted platforms, Minecraft plugins and Python tooling.">
   <meta name="author" content="احسن">
   <meta name="theme-color" content="#050505">
   <meta name="color-scheme" content="dark">
@@ -13,11 +13,11 @@
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="6p6t">
-  <meta property="og:description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
+  <meta property="og:description" content="6p6t — independent developer. Discord bots, self-hosted platforms, Minecraft plugins and Python tooling.">
   <meta property="og:url" content="https://i6p6t.github.io/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="6p6t">
-  <meta name="twitter:description" content="6p6t — Python developer. Self-hosted storage, terminal video and subtitle tooling.">
+  <meta name="twitter:description" content="6p6t — independent developer. Discord bots, self-hosted platforms, Minecraft plugins and Python tooling.">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050505'/%3E%3Ctext x='32' y='28' font-family='monospace' font-size='26' font-weight='700' fill='%23e8e8e8' text-anchor='middle'%3E6p%3C/text%3E%3Ctext x='32' y='56' font-family='monospace' font-size='26' font-weight='700' fill='%23e8e8e8' text-anchor='middle'%3E6t%3C/text%3E%3C/svg%3E">
 
@@ -46,7 +46,6 @@
           <li><a class="lnk" href="/contact">contact</a></li>
         </ul>
       </nav>
-      <span id="prog" class="prog" aria-hidden="true"></span>
     </div>
     <div class="rule" data-rule="─" aria-hidden="true"></div>
   </header>
@@ -59,13 +58,12 @@
       <pre id="hero-art" class="hero-art" aria-hidden="true"></pre>
 
       <p class="tagline">
-        <span class="sr-only">Python developer.</span>
+        <span class="sr-only">Independent developer.</span>
         <span aria-hidden="true"><span class="prompt">&gt;</span> <span id="tagline"></span><span class="caret">█</span></span>
       </p>
 
       <p class="intro">
-        Python developer. I build self-contained tools: a standard-library NAS, a terminal video player
-        and a subtitle generator.
+        I build Discord bots, self-hosted web platforms, Minecraft plugins and Python tooling.
         <span class="byline">by <span class="ur" dir="rtl" lang="ur">احسن</span></span>
       </p>
 
@@ -83,14 +81,13 @@
       <div class="frame reveal about-grid" data-title="whoami">
         <div class="about-text">
           <p>I am <span class="ur" dir="rtl" lang="ur">احسن</span>, a developer working under the name <strong>6p6t</strong>.
-             I build Python tools end to end, from design to release.</p>
-          <p class="dim">I favor software that is simple to deploy and maintain: few dependencies,
-             predictable behavior, minimal setup. Current work covers self-hosted storage,
-             terminal video playback and subtitle generation.</p>
+             I build software independently, from design through deployment.</p>
+          <p class="dim">My work covers Discord bots, self-hosted web platforms, Minecraft plugins
+             and Python tooling.</p>
           <ul class="facts">
             <li><span class="k">role</span> Developer</li>
             <li><span class="k">language</span> Python</li>
-            <li><span class="k">focus</span> CLI tools, self-hosting, media</li>
+            <li><span class="k">focus</span> Bots, platforms, tooling</li>
             <li><span class="k">status</span> Available for select work</li>
           </ul>
         </div>
@@ -134,37 +131,45 @@
       <div class="sec-head"><span class="num" aria-hidden="true">03</span><h2 id="h-stack" data-scramble>stack</h2><span class="rule" data-rule="═" aria-hidden="true"></span></div>
 
       <div class="stack-grid">
-        <div class="frame reveal" data-title="skills">
-          <ul class="bars">
-            <li><span class="sk">Python</span><span class="bar" data-level="95" role="img" aria-label="Python, 95 percent"></span></li>
-            <li><span class="sk">CLI tools</span><span class="bar" data-level="88" role="img" aria-label="CLI tools, 88 percent"></span></li>
-            <li><span class="sk">Linux</span><span class="bar" data-level="80" role="img" aria-label="Linux, 80 percent"></span></li>
-            <li><span class="sk">Networking</span><span class="bar" data-level="76" role="img" aria-label="Networking, 76 percent"></span></li>
-            <li><span class="sk">Video</span><span class="bar" data-level="72" role="img" aria-label="Video processing, 72 percent"></span></li>
-            <li><span class="sk">Web basics</span><span class="bar" data-level="55" role="img" aria-label="HTML, CSS and JavaScript, 55 percent"></span></li>
+        <div class="frame reveal" data-title="domains">
+          <ul class="tags domains" aria-label="Domains">
+            <li>discord bots</li>
+            <li>self-hosted platforms</li>
+            <li>licensing systems</li>
+            <li>media tooling</li>
+            <li>network tools</li>
+            <li>minecraft plugins</li>
           </ul>
         </div>
 
-        <div class="frame reveal" data-title="overview">
+        <div class="frame reveal" data-title="technologies">
           <pre class="tree">stack/
-├── language
-│   └── python
-├── approach
-│   ├── standard library first
-│   ├── minimal dependencies
-│   └── built and maintained solo
-├── domains
-│   ├── storage and networking
-│   ├── terminal graphics
-│   └── video and subtitles
-└── tools
-    ├── git
-    └── linux</pre>
+├── backend
+│   ├── python
+│   ├── fastapi
+│   ├── flask
+│   └── next.js
+├── data
+│   ├── postgresql
+│   ├── mongodb
+│   ├── sqlite
+│   ├── redis
+│   └── supabase
+├── infrastructure
+│   ├── linux
+│   ├── vercel
+│   └── cloudflare r2
+└── game
+    ├── paper plugins
+    └── skript</pre>
         </div>
       </div>
 
       <div id="activity" class="frame reveal" data-title="activity">
-        <pre id="heat" class="heat" role="img" aria-label="Public GitHub activity">loading…</pre>
+        <div class="act">
+          <pre id="heat" class="heat" role="img" aria-label="GitHub activity">loading…</pre>
+          <pre id="heat-stats" class="heat-stats"></pre>
+        </div>
       </div>
     </section>
 
@@ -174,24 +179,24 @@
       <div class="frame reveal" data-title="history">
         <ol class="log">
           <li>
-            <p><span class="hash" aria-hidden="true">a41f9c2</span> <span class="when">20XX – present</span></p>
+            <p><span class="hash" aria-hidden="true">a41f9c2</span> <span class="when">present</span></p>
             <p class="role">Independent developer · 6p6t</p>
-            <p class="dim">Designing, building and maintaining Python tools.</p>
+            <p class="dim">Designing, building and maintaining software end to end.</p>
           </li>
           <li>
-            <p><span class="hash" aria-hidden="true">7be03d1</span> <span class="when">20XX</span></p>
-            <p class="role">Submerge</p>
-            <p class="dim">Released a sideloaded subtitle generation and burn-in app.</p>
+            <p><span class="hash" aria-hidden="true">7be03d1</span> <span class="when">ongoing</span></p>
+            <p class="role">Discord bots</p>
+            <p class="dim">Bot frameworks and media-posting bots.</p>
           </li>
           <li>
-            <p><span class="hash" aria-hidden="true">0c9d5aa</span> <span class="when">20XX</span></p>
-            <p class="role">ascii-video-player</p>
-            <p class="dim">Built a terminal player that renders video as ASCII.</p>
+            <p><span class="hash" aria-hidden="true">0c9d5aa</span> <span class="when">ongoing</span></p>
+            <p class="role">Self-hosted platforms</p>
+            <p class="dim">Video hosting, file sharing, image hosting and licensing systems.</p>
           </li>
           <li>
-            <p><span class="hash" aria-hidden="true">3d8e61b</span> <span class="when">20XX</span></p>
-            <p class="role">6p6t-storage-service</p>
-            <p class="dim">Built a NAS service in pure Python with no external dependencies.</p>
+            <p><span class="hash" aria-hidden="true">3d8e61b</span> <span class="when">ongoing</span></p>
+            <p class="role">Plugins and tooling</p>
+            <p class="dim">Minecraft server plugins, Skript and Python utilities.</p>
           </li>
         </ol>
       </div>
@@ -204,9 +209,8 @@
         <p><span class="ps1" aria-hidden="true">visitor@6p6t:~$</span> cat contact.txt</p>
         <ul class="contact">
           <li><span class="k">github</span>   <a class="lnk" href="https://github.com/i6p6t" rel="me noopener">github.com/i6p6t</a></li>
-          <li><span class="k">x</span>        <a class="lnk" href="https://x.com/6p6t" rel="me noopener">x.com/6p6t</a></li>
           <li><span class="k">email</span>    <a class="lnk" href="mailto:hello@6p6t.lol">hello@6p6t.lol</a></li>
-          <li><span class="k">linkedin</span> <a class="lnk" href="https://linkedin.com/in/6p6t" rel="me noopener">linkedin.com/in/6p6t</a></li>
+          <li><span class="k">instagram</span> <a class="lnk" href="https://instagram.com/6p6t" rel="me noopener">instagram.com/6p6t</a></li>
           <li><span class="k">time</span>     <span id="ltime">--:--</span></li>
         </ul>
         <p aria-hidden="true"><span class="ps1">visitor@6p6t:~$</span> <span class="caret">█</span></p>
